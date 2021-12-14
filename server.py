@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 import data_manager
 import connection
 
@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route("/list")
 def main_page():
     data = data_manager.sort(connection.DATA_FILE_PATH_QUESTION)
-    return data[0]["id"]
+    return render_template('list.html', questions=data)
 
 
 
