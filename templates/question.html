@@ -9,9 +9,9 @@
     <h1>{{ question["title"] }}</h1>
     <h3>{{ question["message"] }}</h3>
     <h2><em>Answers:</em></h2>
-
+    <ol>
     {% for answer in answers %}
-        <p>{{ answer['message'] }}</p>     {#(<a href="/answer/{{ answer['id'] }}">link</a>)</p>#}
+        <li><p>{{ answer['message'] }}</p></li>      {#(<a href="/answer/{{ answer['id'] }}">link</a>)</p>#}
     {% endfor %}
-
+    </ol>
 {% endblock %}

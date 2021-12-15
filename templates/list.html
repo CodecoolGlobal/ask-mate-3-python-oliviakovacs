@@ -6,8 +6,11 @@
 
 {% block body %}
 <h1>Questions</h1>
+    <ol>
     {% for question in questions %}
-    <p>{{ question['title'] }} (<a href="/question/{{ question['id'] }}">link</a>)</p>
+        <li><p>{{ question['title'] }} (<a href="/question/{{ question['id'] }}">link</a>)</p></li>
     {% endfor %}
+    </ol>
     <a href="/add-question">Add new question</a>
 {% endblock %}
+
