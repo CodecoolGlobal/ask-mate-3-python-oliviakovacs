@@ -9,7 +9,7 @@
     {% else %}
     <h1>Question</h1>
     {% endif %}
-    <form>
+    <form method="post" action={{ route }}>
         {% if visible_data.get('title') != None %}
         <label for="title">Question:</label><br>
         <input type="text" id="title" name="title" maxlength="120" required value={{ visible_data['title'] }}><br><br>
