@@ -1,21 +1,25 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {{ id if id is not none else "Add new" }}
+{{  "Answer" if visible_data.get('title') == None else "Question"  }}
 {% endblock %}
-
 {% block body %}
+    {% if visible_data.get('title') == None %}
+    <h1>Answer</h1>
+    {% else %}
+    <h1>Question</h1>
+    {% endif %}
     <form>
-{#        {% if  %}#}
-        <label for="title">{{  }}</label><br>
-        <input type="text" id="title" name="title">
+        {% if visible_data.get('title') != None %}
+        <label for="title">Question:</label><br>
+        <input type="text" id="title" name="title" maxlength="120" required value={{ visible_data['title'] }}><br><br>
+        {% endif %}
 
-        <label for="message">Message:</label><br>
-        <textarea name="message" id="message" rows="4" cols="60" required>
-            {{ id if id is not none }}
-        </textarea>
+        <label for="message">Explanation:</label><br>
+        <textarea name="message" id="message" rows="4" cols="60" required>{{ visible_data['message'] }}
+        </textarea><br><br>
 
-        <button type="submit">{{ id if id != None else "Submit question" }}</button>
+        <button type="submit">Send</button>
 
     </form>
 {% endblock %}

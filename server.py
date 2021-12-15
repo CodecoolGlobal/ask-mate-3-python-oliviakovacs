@@ -20,7 +20,7 @@ def display_question(id):
     return render_template("question.html", question=question, answers=answers)
 
 
-@app.route("/add-question", methods=["POST"])
+@app.route("/add-question", methods=["POST", "GET"])
 def add_question():
     if request.method == "POST":
         all_questions = connection.get_data(connection.DATA_FILE_PATH_QUESTION)
@@ -32,9 +32,11 @@ def add_question():
                 new_question.update({header: request.form["message"]})
             if header == "image":
                 new_question.update({header: request.form["image"]})
+            all_questions.append(new_question)
+            #file iras
         return redirect("/list")
-    question_id = None
-    return render_template("form.html", id=question_id)
+    question = {'title': '', 'message': ''}
+    return render_template("form.html", visible_data=question)
 
 
 @app.route('/question/<question_id>/new-answer')
@@ -79,6 +81,7 @@ def vote_down_answer():
 
 if __name__ == "__main__":
     app.run(
+        host='0.0.0.0',
         debug=True,
         port=5000
     )
