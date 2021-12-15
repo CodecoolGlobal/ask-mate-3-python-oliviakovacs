@@ -47,3 +47,14 @@ def create_new_data(headers, file):
         if header == "view_number":
             new_data.update({"view_number": 0})
     return new_data
+
+
+def delete_by_id(filename, index, key):
+    finale_file = []
+    for row in filename:
+        if row[key] != index:
+            finale_file.append(row)
+    return finale_file
+
+
+

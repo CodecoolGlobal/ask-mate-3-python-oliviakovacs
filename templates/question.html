@@ -13,5 +13,6 @@
     {% for answer in answers %}
         <li><p>{{ answer['message'] }}</p></li>      {#(<a href="/answer/{{ answer['id'] }}">link</a>)</p>#}
     {% endfor %}
+    <br><button><a href="/question/{{ question['id'] }}/delete">Delete Question</a></button>
     </ol>
 {% endblock %}
