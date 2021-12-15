@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ id if id is not none else "Add new" }}
+{% endblock %}
+
+{% block body %}
+    <form>
+{#        {% if  %}#}
+        <label for="title">{{  }}</label><br>
+        <input type="text" id="title" name="title">
+
+        <label for="message">Message:</label><br>
+        <textarea name="message" id="message" rows="4" cols="60" required>
+            {{ id if id is not none }}
+        </textarea>
+
+        <button type="submit">{{ id if id != None else "Submit question" }}</button>
+
+    </form>
+{% endblock %}

@@ -1,4 +1,5 @@
 import connection
+import time
 
 
 def sort(filename, type="submission_time", order="descending"):
@@ -28,3 +29,21 @@ def get_answers_by_question_id(question_id):
         if answer["question_id"] == question_id:
             question_answers.append(answer)
     return question_answers
+
+
+def create_new_data(headers, file):
+    file_list = connection.get_data(file)
+    ids = []
+    for file in file_list:
+        ids.append(file["id"])
+    new_data = {}
+    for header in headers:
+        if header == "id":
+            new_data.update({"id": max(ids) + 1})
+        if header == "submission_time":
+            new_data.update({"submission_time": time.time()})
+        if header == "vote_number":
+            new_data.update({"vote_number": 0})
+        if header == "view_number":
+            new_data.update({"view_number": 0})
+    return new_data
