@@ -1,5 +1,6 @@
 import connection
 import time
+from flask import request
 
 
 def sort(filename, type="submission_time", order="descending"):
@@ -47,3 +48,17 @@ def create_new_data(headers, file):
         if header == "view_number":
             new_data.update({"view_number": 0})
     return new_data
+
+
+def add_new_content(file_name, headers):
+    existing_content = sort(file_name)
+    new_content = create_new_data(headers, file_name)
+    for header in headers:
+        if header == "title":
+            new_content.update({header: request.form["title"]})
+        if header == "message":
+            new_content.update({header: request.form["message"]})
+        # if header == "image":
+        # new_question.update({header: request.form["image"]})
+    existing_content.append(new_content)
+    connection.write_data(file_name, existing_content, headers)

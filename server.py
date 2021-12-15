@@ -23,17 +23,7 @@ def display_question(id):
 @app.route("/add-question", methods=["POST", "GET"])
 def add_question():
     if request.method == "POST":
-        all_questions = data_manager.sort(connection.DATA_FILE_PATH_QUESTION)
-        new_question = data_manager.create_new_data(connection.DATA_HEADER_QUESTION, connection.DATA_FILE_PATH_QUESTION)
-        for header in connection.DATA_HEADER_QUESTION:
-            if header == "title":
-                new_question.update({header: request.form["title"]})
-            if header == "message":
-                new_question.update({header: request.form["message"]})
-            #if header == "image":
-                #new_question.update({header: request.form["image"]})
-        all_questions.append(new_question)
-        connection.write_data(connection.DATA_FILE_PATH_QUESTION, all_questions, connection.DATA_HEADER_QUESTION)
+        data_manager.add_new_content(connection.DATA_FILE_PATH_QUESTION, connection.DATA_HEADER_QUESTION)
         return redirect("/list")
     question = {'title': '', 'message': ''}
     return render_template("form.html", visible_data=question, route="/add-question")
