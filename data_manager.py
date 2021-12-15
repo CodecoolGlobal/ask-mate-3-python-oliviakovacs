@@ -6,13 +6,13 @@ def sort(filename, type="submission_time", order="descending"):
     data = connection.get_data(filename)
     for i in range(len(data)-1):
         for j in range(len(data)-i-1):
-            if data[i][type].isnumeric() and int(data[i][type]) > int(data[j][type]):
+            if data[i][type].isnumeric() and float(data[i][type]) > float(data[j][type]):
                 data[i], data[j] = data[j], data[i]
             elif data[i][type] > data[j][type]:
                 data[i], data[j] = data[j], data[i]
     if order == "descending":
-        return data
-    return data[::-1]
+        return data[::-1]
+    return data
 
 
 def get_question_by_id(id):
@@ -35,7 +35,7 @@ def create_new_data(headers, file):
     file_list = connection.get_data(file)
     ids = []
     for file in file_list:
-        ids.append(file["id"])
+        ids.append(int(file["id"]))
     new_data = {}
     for header in headers:
         if header == "id":
