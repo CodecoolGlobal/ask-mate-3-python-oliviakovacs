@@ -37,6 +37,46 @@ def add_question():
     return render_template("form.html", id=question_id)
 
 
+@app.route('/question/<question_id>/new-answer')
+def add_answer():
+    pass
+
+
+@app.route('/question/<question_id>/delete')
+def delete_question():
+    pass
+
+
+@app.route('/question/<question_id>/edit')
+def edit_question():
+    pass
+
+
+@app.route('/answer/<answer_id>/delete')
+def delete_answer():
+    pass
+
+
+@app.route('/question/<question_id>/vote_up')
+def vote_up_question():
+    pass
+
+
+@app.route('/question/<question_id>/vote_down')
+def vote_down_question():
+    pass
+
+
+@app.route('/answer/<question_id>/vote_up')
+def vote_up_answer():
+    pass
+
+
+@app.route('/answer/<question_id>/vote_down')
+def vote_down_answer():
+    pass
+
+
 if __name__ == "__main__":
     app.run(
         debug=True,
