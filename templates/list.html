@@ -9,4 +9,5 @@
     {% for question in questions %}
     <p>{{ question['title'] }} (<a href="/question/{{ question['id'] }}">link</a>)</p>
     {% endfor %}
+    <a href="/add-question">Add new question</a>
 {% endblock %}
