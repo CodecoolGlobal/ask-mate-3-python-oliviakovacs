@@ -50,6 +50,15 @@ def create_new_data(headers, file):
     return new_data
 
 
+
+def delete_by_id(filename, index, key):
+    finale_file = []
+    for row in filename:
+        if row[key] != index:
+            finale_file.append(row)
+    return finale_file
+
+
 def add_new_content(file_name, headers, id=0):
     existing_content = sort(file_name)
     new_content = create_new_data(headers, file_name)

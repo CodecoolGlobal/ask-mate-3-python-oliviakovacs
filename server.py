@@ -38,9 +38,16 @@ def add_answer(question_id):
     return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False )
 
 
-@app.route('/question/<question_id>/delete')
-def delete_question():
-    pass
+@app.route('/question/<id>/delete', methods=["GET"])
+def delete_question(id):
+    old_data = data_manager.sort(connection.DATA_FILE_PATH_QUESTION)
+    header = connection.DATA_HEADER_QUESTION
+    data = data_manager.delete_by_id(old_data, id, "id")
+    connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
+    old_answers = data_manager.sort(connection.DATA_FILE_PATH_ANSWER)
+    answer = data_manager.delete_by_id(old_answers, id, "question_id")
+    connection.write_data(connection.DATA_FILE_PATH_ANSWER, answer, header)
+    return redirect("/list")
 
 
 @app.route('/question/<question_id>/edit')
