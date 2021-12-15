@@ -1,4 +1,5 @@
 id,submission_time,view_number,vote_number,title,message,image
+6,1639582710.21661,0,0,jnnbbaaaaa,        ,
 4,1639578365.0529177,0,0,Why does textarea put spaces in the area?,It would be so much better not to write blank spaces to csv,
 2,1493068124,15,9,Wordpress loading multiple jQuery Versions,"I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
 
@@ -14,3 +15,4 @@ app.js (bundled file with webpack, including jquery)",images/image1.png
 This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
 1,1493368154,29,7,How to make lists in Python?,"I am totally new to this, any hints?",
 5,1639580201.6085017,0,0,Does this work?,I reeeeeaaaallllllyyyyy hope it does.,
+7,1639587202.428146,0,0,kkkkkwwwww,jfweufguf,

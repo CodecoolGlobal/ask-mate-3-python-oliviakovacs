@@ -8,6 +8,8 @@
 
     <h1>{{ question["title"] }}</h1>
     <h3>{{ question["message"] }}</h3>
+    <a href="/question/{{ question["id"] }}/new-answer">Add new answer</a>
+
     <h2><em>Answers:</em></h2>
     <ol>
     {% for answer in answers %}

@@ -26,12 +26,16 @@ def add_question():
         data_manager.add_new_content(connection.DATA_FILE_PATH_QUESTION, connection.DATA_HEADER_QUESTION)
         return redirect("/list")
     question = {'title': '', 'message': ''}
-    return render_template("form.html", visible_data=question, route="/add-question")
+    return render_template("form.html", visible_data=question, route="/add-question", is_question=True)
 
 
-@app.route('/question/<question_id>/new-answer')
-def add_answer():
-    pass
+@app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
+def add_answer(question_id):
+    if request.method == "POST":
+        data_manager.add_new_content(connection.DATA_FILE_PATH_ANSWER, connection.DATA_HEADER_ANSWER, question_id)
+        return redirect(f"/question/{question_id}")
+    question = data_manager.get_question_by_id(question_id)
+    return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False )
 
 
 @app.route('/question/<question_id>/delete')

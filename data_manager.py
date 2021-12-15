@@ -50,7 +50,7 @@ def create_new_data(headers, file):
     return new_data
 
 
-def add_new_content(file_name, headers):
+def add_new_content(file_name, headers, id=0):
     existing_content = sort(file_name)
     new_content = create_new_data(headers, file_name)
     for header in headers:
@@ -58,7 +58,10 @@ def add_new_content(file_name, headers):
             new_content.update({header: request.form["title"]})
         if header == "message":
             new_content.update({header: request.form["message"]})
+        if header == "question_id":
+            new_content.update({header: id})
         # if header == "image":
         # new_question.update({header: request.form["image"]})
     existing_content.append(new_content)
     connection.write_data(file_name, existing_content, headers)
+

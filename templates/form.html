@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
 {% block title %}
-{{  "Answer" if visible_data.get('title') == None else "Question"  }}
+{{ "Question" if is_question else "Answer" }}
 {% endblock %}
 {% block body %}
-    {% if visible_data.get('title') == None %}
-    <h1>Answer</h1>
-    {% else %}
+    {% if is_question %}
     <h1>Question</h1>
+    {% else %}
+    <h1>Answer</h1>
     {% endif %}
     <form method="post" action={{ route }}>
-        {% if visible_data.get('title') != None %}
+        {% if is_question %}
         <label for="title">Question:</label><br>
         <input type="text" id="title" name="title" maxlength="120" required value={{ visible_data['title'] }}><br><br>
         {% endif %}
