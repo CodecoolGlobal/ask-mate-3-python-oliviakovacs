@@ -7,10 +7,10 @@ def sort(filename, type="submission_time", order="descending"):
     data = connection.get_data(filename)
     for i in range(len(data)-1):
         for j in range(len(data)-i-1):
-            if data[i][type].isnumeric() and float(data[i][type]) > float(data[j][type]):
-                data[i], data[j] = data[j], data[i]
-            elif data[i][type] > data[j][type]:
-                data[i], data[j] = data[j], data[i]
+            if data[j][type].isnumeric() and float(data[j][type]) > float(data[j+1][type]):
+                data[j], data[j+1] = data[j+1], data[j]
+            elif data[j][type] > data[j+1][type]:
+                data[j], data[j+1] = data[j+1], data[j]
     if order == "descending":
         return data[::-1]
     return data
