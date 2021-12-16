@@ -16,7 +16,7 @@
         {% endif %}
 
         <label for="message">Explanation:</label><br>
-        <textarea name="message" id="message" rows="4" cols="60" required>{{ visible_data['message'] }}
+        <textarea name="message" id="message" rows="4" cols="60" required>{{ visible_data['message'] if is_question }}
         </textarea><br><br>
 
         <button type="submit">Send</button>

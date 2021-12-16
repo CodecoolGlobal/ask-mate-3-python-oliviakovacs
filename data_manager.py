@@ -80,15 +80,10 @@ def add_new_content(file_name, headers, id=0):
     connection.write_data(file_name, existing_content, headers)
 
 
-def incrase_vote(filename, id):
+def change_vote(filename, id, direction):
     for row in filename:
-        if row["id"] == id:
+        if row["id"] == id and direction == "increase":
             row['vote_number'] = str(int(row['vote_number']) + 1)
-            return filename
-
-
-def decrease_vote(filename, id):
-    for row in filename:
-        if row["id"] == id:
+        elif row["id"] == id and direction == "decrease":
             row['vote_number'] = str(int(row['vote_number']) - 1)
-            return filename
+        return filename
