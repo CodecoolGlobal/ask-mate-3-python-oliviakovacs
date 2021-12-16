@@ -7,10 +7,16 @@ app = Flask(__name__)
 
 @app.route("/")
 @app.route("/list")
-def main_page():
+@app.route("/list?order_by=<key>&order_direction=<order>", methods=["POST", "GET"])
+def main_page(key="submission_time", order="descending"):
     data = data_manager.get_selected_data("question")
-    sort_data = data_manager.sort(data)
-    return render_template('list.html', questions=sort_data)
+    if request.method == "POST":
+        key = request.form["key"]
+        order = request.form["order"]
+        sort_data = data_manager.sort(data, key, order)
+        return render_template(url_for("main_page", key=key, order=order, questions=sort_data))
+    default_sort_data = data_manager.sort(data)
+    return render_template('list.html', questions=default_sort_data)
 
 
 # @app.route("/question")
