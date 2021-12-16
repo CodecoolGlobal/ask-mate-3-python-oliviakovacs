@@ -6,20 +6,19 @@
 
 {% block body %}
 <h1>Questions</h1>
-    <form method="post" action="{{ url_for("main_page", key=key, order=order) }}">
+    <form method="get" action="{{ url_for("main_page") }}">
     <label for="key">Sort by:</label>
-    <select name="key" id="key" onchange="this.form.submit()">
-          <option value="title">Title</option>
-          <option value="submission_time">Submission time</option>
-          <option value="message">Message</option>
-          <option value="view_number">Number of views</option>
-          <option value="vote_number">Number of votes</option>
+    <select name="order_by" id="key" onchange="this.form.submit()" >
+        <option value="submission_time">Submission time</option>
+        <option value="title">Title</option>
+        <option value="message">Message</option>
+        <option value="view_number">Number of views</option>
+        <option value="vote_number">Number of votes</option>
     </select><br>
-        <input type="radio" id="descending" name="order" value="descending" onclick="this.form.submit()">
+        <input type="radio" id="descending" name="order_direction" value="descending" onclick="this.form.submit()">
         <label for="descending">descending</label>
-        <input type="radio" id="ascending" name="order" value="ascending" onclick="this.form.submit()">
+        <input type="radio" id="ascending" name="order_direction" value="ascending" onclick="this.form.submit()">
         <label for="ascending">ascending</label><br>
-{#    <button type="submit">To Sort pls</button>#}
     </form>
     <ol>
     {% for question in questions %}
