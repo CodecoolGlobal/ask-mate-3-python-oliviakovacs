@@ -86,8 +86,7 @@ def change_vote(filename, id, direction):
             row['vote_number'] = str(int(row['vote_number']) + 1)
         elif row["id"] == id and direction == "decrease":
             row['vote_number'] = str(int(row['vote_number']) - 1)
-        return filename
-            return filename
+    return filename
 
 
 def edit_question(old, new_title, new_message, id,):

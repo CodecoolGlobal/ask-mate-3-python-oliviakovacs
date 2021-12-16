@@ -71,7 +71,7 @@ def delete_answer(answer_id):
     answer = data_manager.delete_by_id(old_answers, answer_id, "id")
     header = connection.DATA_HEADER_ANSWER
     connection.write_data(connection.DATA_FILE_PATH_ANSWER, answer, header)
-    question_id = data_manager.which_question(old_answers, answer_id, "id")
+    question_id = data_manager.which_question(old_answers, answer_id)
     return redirect(url_for("display_question", id=question_id))
 
 
