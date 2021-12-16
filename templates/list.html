@@ -22,7 +22,7 @@
     </form>
     <ol>
     {% for question in questions %}
-        <li><p>{{ question['title'] }} (<a href="/question/{{ question['id'] }}">link</a>)</p></li>
+        <li><p><p><img src={{ url_for('static' ,filename=question['image']) }}><br>{{ question['title'] }} (<a href="/question/{{ question['id'] }}">link</a>)</p></li>
     {% endfor %}
     </ol>
     <a href="/add-question">Add new question</a>
