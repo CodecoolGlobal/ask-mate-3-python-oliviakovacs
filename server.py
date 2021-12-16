@@ -52,9 +52,18 @@ def delete_question(id):
     return redirect("/list")
 
 
-@app.route('/question/<question_id>/edit')
-def edit_question():
-    pass
+@app.route('/question/<question_id>/edit', methods=["POST", "GET"])
+def edit_question(question_id):
+    if request.method == "POST":
+        header = connection.DATA_HEADER_QUESTION
+        old_data = data_manager.sort(connection.DATA_FILE_PATH_QUESTION, type="submission_time", order="None")
+        question_title = request.form['title']
+        question_message = request.form['message']
+        edited_question = data_manager.edit_question(old_data, question_title, question_message, question_id)
+        connection.write_data(connection.DATA_FILE_PATH_QUESTION, edited_question, header)
+        return redirect(url_for("display_question", id=question_id))
+    question = {'title': '', 'message': ''}
+    return render_template("form.html", visible_data=question, route=url_for('edit_question', question_id=question_id), is_question=True)
 
 
 @app.route('/answer/<answer_id>/delete', methods=["POST", "GET"])
@@ -63,14 +72,14 @@ def delete_answer(answer_id):
     answer = data_manager.delete_by_id(old_answers, answer_id, "id")
     header = connection.DATA_HEADER_ANSWER
     connection.write_data(connection.DATA_FILE_PATH_ANSWER, answer, header)
-    question_id = data_manager.which_question(old_answers, answer_id, "id")
+    question_id = data_manager.which_question(old_answers, answer_id)
     return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/question/<question_id>/vote_up')
 def vote_up_question(question_id):
     old_data = data_manager.get_selected_data('question')
-    data = data_manager.incrase_vote(old_data, question_id)
+    data = data_manager.incrase_vote(old_data, question_id, "increase")
     header = connection.DATA_HEADER_QUESTION
     connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
     return redirect(url_for("display_question", id=question_id))
@@ -79,7 +88,7 @@ def vote_up_question(question_id):
 @app.route('/question/<question_id>/vote_down')
 def vote_down_question(question_id):
     old_data = data_manager.get_selected_data('question')
-    data = data_manager.decrease_vote(old_data, question_id)
+    data = data_manager.decrease_vote(old_data, question_id, "decrease")
     header = connection.DATA_HEADER_QUESTION
     connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
     return redirect(url_for("display_question", id=question_id))
@@ -88,7 +97,7 @@ def vote_down_question(question_id):
 @app.route('/answer/<id>/vote_up')
 def vote_up_answer(id):
     old_data = data_manager.get_selected_data('answer')
-    data = data_manager.incrase_vote(old_data, id)
+    data = data_manager.incrase_vote(old_data, id, "increase")
     header = connection.DATA_HEADER_ANSWER
     connection.write_data(connection.DATA_FILE_PATH_ANSWER, data, header)
     question_id = data_manager.which_question(old_data, id)
@@ -98,7 +107,7 @@ def vote_up_answer(id):
 @app.route('/answer/<id>/vote_down')
 def vote_down_answer(id):
     old_data = data_manager.get_selected_data('answer')
-    data = data_manager.decrease_vote(old_data, id)
+    data = data_manager.decrease_vote(old_data, id, "decrease")
     header = connection.DATA_HEADER_ANSWER
     connection.write_data(connection.DATA_FILE_PATH_ANSWER, data, header)
     question_id = data_manager.which_question(old_data, id)

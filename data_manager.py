@@ -93,15 +93,18 @@ def add_new_content(which, id=0):
     connection.write_data(file_name, existing_content, headers)
 
 
-def incrase_vote(filename, id):
+def change_vote(filename, id, direction):
     for row in filename:
-        if row["id"] == id:
+        if row["id"] == id and direction == "increase":
             row['vote_number'] = str(int(row['vote_number']) + 1)
-            return filename
-
-
-def decrease_vote(filename, id):
-    for row in filename:
-        if row["id"] == id:
+        elif row["id"] == id and direction == "decrease":
             row['vote_number'] = str(int(row['vote_number']) - 1)
-            return filename
+    return filename
+
+
+def edit_question(old, new_title, new_message, id,):
+    for row in old:
+        if row["id"] == id:
+            row["title"] = new_title
+            row["message"] = new_message
+            return old
