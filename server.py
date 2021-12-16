@@ -62,7 +62,7 @@ def edit_question(question_id):
         edited_question = data_manager.edit_question(old_data, question_title, question_message, question_id)
         connection.write_data(connection.DATA_FILE_PATH_QUESTION, edited_question, header)
         return redirect(url_for("display_question", id=question_id))
-    question = {'title': '', 'message': ''}
+    question = data_manager.get_question_by_id(question_id, "question")
     return render_template("form.html", visible_data=question, route=url_for('edit_question', question_id=question_id), is_question=True)
 
 
