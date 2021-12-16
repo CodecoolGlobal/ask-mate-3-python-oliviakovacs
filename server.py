@@ -41,11 +41,11 @@ def add_answer(question_id):
 
 @app.route('/question/<id>/delete', methods=["GET"])
 def delete_question(id):
-    old_data = data_manager.sort(connection.DATA_FILE_PATH_QUESTION)
+    old_data = data_manager.get_selected_data('question')
     data = data_manager.delete_by_id(old_data, id, "id")
     header = connection.DATA_HEADER_QUESTION
     connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
-    old_answers = data_manager.sort(connection.DATA_FILE_PATH_ANSWER)
+    old_answers = data_manager.get_selected_data('answer')
     answer = data_manager.delete_by_id(old_answers, id, "question_id")
     answer_header = connection.DATA_HEADER_ANSWER
     connection.write_data(connection.DATA_FILE_PATH_ANSWER, answer, answer_header)
@@ -56,7 +56,7 @@ def delete_question(id):
 def edit_question(question_id):
     if request.method == "POST":
         header = connection.DATA_HEADER_QUESTION
-        old_data = data_manager.sort(connection.DATA_FILE_PATH_QUESTION, type="submission_time", order="None")
+        old_data = data_manager.get_selected_data('question')
         question_title = request.form['title']
         question_message = request.form['message']
         edited_question = data_manager.edit_question(old_data, question_title, question_message, question_id)
@@ -68,7 +68,7 @@ def edit_question(question_id):
 
 @app.route('/answer/<answer_id>/delete', methods=["POST", "GET"])
 def delete_answer(answer_id):
-    old_answers = data_manager.sort(connection.DATA_FILE_PATH_ANSWER)
+    old_answers = data_manager.get_selected_data('answer')
     answer = data_manager.delete_by_id(old_answers, answer_id, "id")
     header = connection.DATA_HEADER_ANSWER
     connection.write_data(connection.DATA_FILE_PATH_ANSWER, answer, header)

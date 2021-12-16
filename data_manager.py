@@ -41,9 +41,9 @@ def get_answers_by_question_id(question_id, option):
 
 def create_new_data(headers, file):
     file_list = connection.get_data(file)
-    ids = []
-    for file in file_list:
-        ids.append(int(file["id"]))
+    ids = [0]
+    for row in file_list:
+        ids.append(int(row["id"]))
     new_data = {}
     for header in headers:
         if header == "id":
