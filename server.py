@@ -51,9 +51,18 @@ def delete_question(id):
     return redirect("/list")
 
 
-@app.route('/question/<question_id>/edit')
-def edit_question():
-    pass
+@app.route('/question/<question_id>/edit', methods=["POST", "GET"])
+def edit_question(question_id):
+    if request.method == "POST":
+        header = connection.DATA_HEADER_QUESTION
+        old_data = data_manager.sort(connection.DATA_FILE_PATH_QUESTION, type="submission_time", order="None")
+        question_title = request.form['title']
+        question_message = request.form['message']
+        edited_question = data_manager.edit_question(old_data, question_title, question_message, question_id)
+        connection.write_data(connection.DATA_FILE_PATH_QUESTION, edited_question, header)
+        return redirect(url_for("display_question", id=question_id))
+    question = {'title': '', 'message': ''}
+    return render_template("form.html", visible_data=question, route=url_for('edit_question', question_id=question_id), is_question=True)
 
 
 @app.route('/answer/<answer_id>/delete', methods=["POST", "GET"])
