@@ -41,7 +41,7 @@ def get_answers_by_question_id(question_id, option):
 
 def create_new_data(headers, file):
     file_list = connection.get_data(file)
-    ids = []
+    ids = [0]
     for file in file_list:
         ids.append(int(file["id"]))
     new_data = {}
@@ -58,11 +58,11 @@ def create_new_data(headers, file):
 
 
 def delete_by_id(filename, index, key):
-    finale_file = []
+    final_file = []
     for row in filename:
         if row[key] != index:
-            finale_file.append(row)
-    return finale_file
+            final_file.append(row)
+    return final_file
 
 
 def which_question(filename, id):
@@ -108,3 +108,29 @@ def edit_question(old, new_title, new_message, id,):
             row["title"] = new_title
             row["message"] = new_message
             return old
+
+
+def delete_content_by_id(content_id, content_type):
+    if content_type == "question":
+        file_path = connection.DATA_FILE_PATH_QUESTION
+        header = connection.DATA_HEADER_QUESTION
+    elif content_type == "answer":
+        file_path = connection.DATA_FILE_PATH_ANSWER
+        header = connection.DATA_HEADER_ANSWER
+    old_data = get_selected_data(content_type)
+    data = delete_by_id(old_data, content_id, "id")
+    connection.write_data(file_path, data, header)
+    return old_data
+
+
+def change_vote_by_id(content_id, content_type, direction):
+    if content_type == "question":
+        file_path = connection.DATA_FILE_PATH_QUESTION
+        header = connection.DATA_HEADER_QUESTION
+    elif content_type == "answer":
+        file_path = connection.DATA_FILE_PATH_ANSWER
+        header = connection.DATA_HEADER_ANSWER
+    old_data = get_selected_data(content_type)
+    data = change_vote(old_data, content_id, direction)
+    connection.write_data(file_path, data, header)
+    return old_data

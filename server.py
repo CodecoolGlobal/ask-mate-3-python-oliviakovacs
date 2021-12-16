@@ -46,14 +46,16 @@ def add_answer(question_id):
 
 @app.route('/question/<id>/delete', methods=["GET"])
 def delete_question(id):
-    old_data = data_manager.get_selected_data("question")
-    data = data_manager.delete_by_id(old_data, id, "id")
-    header = connection.DATA_HEADER_QUESTION
-    connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
-    old_answers = data_manager.get_selected_data("answer")
-    answer = data_manager.delete_by_id(old_answers, id, "question_id")
-    answer_header = connection.DATA_HEADER_ANSWER
-    connection.write_data(connection.DATA_FILE_PATH_ANSWER, answer, answer_header)
+    data_manager.delete_content_by_id(id, "question")
+    data_manager.delete_content_by_id(id, "answer")
+    # old_data = data_manager.get_selected_data("question")
+    # data = data_manager.delete_by_id(old_data, id, "id")
+    # header = connection.DATA_HEADER_QUESTION
+    # connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
+    # old_answers = data_manager.get_selected_data("answer")
+    # answer = data_manager.delete_by_id(old_answers, id, "question_id")
+    # answer_header = connection.DATA_HEADER_ANSWER
+    # connection.write_data(connection.DATA_FILE_PATH_ANSWER, answer, answer_header)
     return redirect("/list")
 
 
@@ -73,48 +75,53 @@ def edit_question(question_id):
 
 @app.route('/answer/<answer_id>/delete', methods=["POST", "GET"])
 def delete_answer(answer_id):
-    old_answers = data_manager.get_selected_data("answer")
-    answer = data_manager.delete_by_id(old_answers, answer_id, "id")
-    header = connection.DATA_HEADER_ANSWER
-    connection.write_data(connection.DATA_FILE_PATH_ANSWER, answer, header)
+    # old_answers = data_manager.get_selected_data("answer")
+    # answer = data_manager.delete_by_id(old_answers, answer_id, "id")
+    # header = connection.DATA_HEADER_ANSWER
+    # connection.write_data(connection.DATA_FILE_PATH_ANSWER, answer, header)
+    old_answers = data_manager.delete_content_by_id(answer_id, "answer")
     question_id = data_manager.which_question(old_answers, answer_id)
     return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/question/<question_id>/vote_up')
 def vote_up_question(question_id):
-    old_data = data_manager.get_selected_data('question')
-    data = data_manager.change_vote(old_data, question_id, "increase")
-    header = connection.DATA_HEADER_QUESTION
-    connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
+    # old_data = data_manager.get_selected_data('question')
+    # data = data_manager.change_vote(old_data, question_id, "increase")
+    # header = connection.DATA_HEADER_QUESTION
+    # connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
+    data_manager.change_vote_by_id(question_id, "question", "increase")
     return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/question/<question_id>/vote_down')
 def vote_down_question(question_id):
-    old_data = data_manager.get_selected_data('question')
-    data = data_manager.change_vote(old_data, question_id, "decrease")
-    header = connection.DATA_HEADER_QUESTION
-    connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
+    # old_data = data_manager.get_selected_data('question')
+    # data = data_manager.change_vote(old_data, question_id, "decrease")
+    # header = connection.DATA_HEADER_QUESTION
+    # connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
+    data_manager.change_vote_by_id(question_id, "question", "decrease")
     return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/answer/<id>/vote_up')
 def vote_up_answer(id):
-    old_data = data_manager.get_selected_data('answer')
-    data = data_manager.change_vote(old_data, id, "increase")
-    header = connection.DATA_HEADER_ANSWER
-    connection.write_data(connection.DATA_FILE_PATH_ANSWER, data, header)
+    # old_data = data_manager.get_selected_data('answer')
+    # data = data_manager.change_vote(old_data, id, "increase")
+    # header = connection.DATA_HEADER_ANSWER
+    # connection.write_data(connection.DATA_FILE_PATH_ANSWER, data, header)
+    old_data = data_manager.change_vote_by_id(id, "answer", "increase")
     question_id = data_manager.which_question(old_data, id)
     return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/answer/<id>/vote_down')
 def vote_down_answer(id):
-    old_data = data_manager.get_selected_data('answer')
-    data = data_manager.change_vote(old_data, id, "decrease")
-    header = connection.DATA_HEADER_ANSWER
-    connection.write_data(connection.DATA_FILE_PATH_ANSWER, data, header)
+    # old_data = data_manager.get_selected_data('answer')
+    # data = data_manager.change_vote(old_data, id, "decrease")
+    # header = connection.DATA_HEADER_ANSWER
+    # connection.write_data(connection.DATA_FILE_PATH_ANSWER, data, header)
+    old_data = data_manager.change_vote_by_id(id, "answer", "decrease")
     question_id = data_manager.which_question(old_data, id)
     return redirect(url_for("display_question", id=question_id))
 
