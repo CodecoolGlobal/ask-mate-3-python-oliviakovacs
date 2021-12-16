@@ -8,23 +8,22 @@ app = Flask(__name__)
 @app.route("/")
 @app.route("/list")
 def main_page():
-    data = data_manager.get_selected_data("question")
-    sort_data = data_manager.sort(data)
-    return render_template('list.html', questions=sort_data)
+    data = data_manager.sort(connection.DATA_FILE_PATH_QUESTION)
+    return render_template('list.html', questions=data)
 
 
 # @app.route("/question")
 @app.route("/question/<id>")
 def display_question(id):
-    question = data_manager.get_question_by_id(id, "question")
-    answers = data_manager.get_answers_by_question_id(id, 'answer')
+    question = data_manager.get_question_by_id(id)
+    answers = data_manager.get_answers_by_question_id(id)
     return render_template("question.html", question=question, answers=answers)
 
 
 @app.route("/add-question", methods=["POST", "GET"])
 def add_question():
     if request.method == "POST":
-        data_manager.add_new_content("question")
+        data_manager.add_new_content(connection.DATA_FILE_PATH_QUESTION, connection.DATA_HEADER_QUESTION)
         return redirect("/list")
     question = {'title': '', 'message': ''}
     return render_template("form.html", visible_data=question, route="/add-question", is_question=True)
@@ -33,9 +32,9 @@ def add_question():
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
 def add_answer(question_id):
     if request.method == "POST":
-        data_manager.add_new_content('answer', question_id)
+        data_manager.add_new_content(connection.DATA_FILE_PATH_ANSWER, connection.DATA_HEADER_ANSWER, question_id)
         return redirect(f"/question/{question_id}")
-    question = data_manager.get_question_by_id(question_id, "answer")
+    question = data_manager.get_question_by_id(question_id)
     return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False )
 
 
@@ -78,7 +77,7 @@ def delete_answer(answer_id):
 
 @app.route('/question/<question_id>/vote_up')
 def vote_up_question(question_id):
-    old_data = data_manager.get_selected_data('question')
+    old_data = data_manager.sort(connection.DATA_FILE_PATH_QUESTION)
     data = data_manager.change_vote(old_data, question_id, "increase")
     header = connection.DATA_HEADER_QUESTION
     connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
@@ -87,7 +86,7 @@ def vote_up_question(question_id):
 
 @app.route('/question/<question_id>/vote_down')
 def vote_down_question(question_id):
-    old_data = data_manager.get_selected_data('question')
+    old_data = data_manager.sort(connection.DATA_FILE_PATH_QUESTION)
     data = data_manager.change_vote(old_data, question_id, "decrease")
     header = connection.DATA_HEADER_QUESTION
     connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
@@ -96,7 +95,7 @@ def vote_down_question(question_id):
 
 @app.route('/answer/<id>/vote_up')
 def vote_up_answer(id):
-    old_data = data_manager.get_selected_data('answer')
+    old_data = data_manager.sort(connection.DATA_FILE_PATH_ANSWER, order="None")
     data = data_manager.change_vote(old_data, id, "increase")
     header = connection.DATA_HEADER_ANSWER
     connection.write_data(connection.DATA_FILE_PATH_ANSWER, data, header)
@@ -106,7 +105,7 @@ def vote_up_answer(id):
 
 @app.route('/answer/<id>/vote_down')
 def vote_down_answer(id):
-    old_data = data_manager.get_selected_data('answer')
+    old_data = data_manager.sort(connection.DATA_FILE_PATH_ANSWER, order="None")
     data = data_manager.change_vote(old_data, id, "decrease")
     header = connection.DATA_HEADER_ANSWER
     connection.write_data(connection.DATA_FILE_PATH_ANSWER, data, header)
