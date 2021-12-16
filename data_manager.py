@@ -3,8 +3,15 @@ import time
 from flask import request
 
 
-def sort(filename, type="submission_time", order="descending"):
-    data = connection.get_data(filename)
+def get_selected_data(choice):
+    if choice == "question":
+        data = connection.get_data(connection.DATA_FILE_PATH_QUESTION)
+    elif choice == "answer":
+        data = connection.get_data(connection.DATA_FILE_PATH_ANSWER)
+    return data
+
+
+def sort(data, type="submission_time", order="descending"):
     for i in range(len(data)-1):
         for j in range(len(data)-i-1):
             if data[i][type].isnumeric() and float(data[i][type]) > float(data[j][type]):
@@ -16,15 +23,15 @@ def sort(filename, type="submission_time", order="descending"):
     return data
 
 
-def get_question_by_id(id):
-    questions = connection.get_data(connection.DATA_FILE_PATH_QUESTION)
+def get_question_by_id(id, option):
+    questions = get_selected_data(option)
     for question in questions:
         if question["id"] == id:
             return question
 
 
-def get_answers_by_question_id(question_id):
-    answers = connection.get_data(connection.DATA_FILE_PATH_ANSWER)
+def get_answers_by_question_id(question_id, option):
+    answers = get_selected_data(option)
     question_answers = []
     for answer in answers:
         if answer["question_id"] == question_id:
@@ -64,8 +71,14 @@ def which_question(filename, id):
             return row["question_id"]
 
 
-def add_new_content(file_name, headers, id=0):
-    existing_content = sort(file_name)
+def add_new_content(which, id=0):
+    if which == "question":
+        file_name = connection.DATA_FILE_PATH_QUESTION
+        headers = connection.DATA_HEADER_QUESTION
+    elif which == "answer":
+        file_name = connection.DATA_FILE_PATH_ANSWER
+        headers = connection.DATA_HEADER_ANSWER
+    existing_content = get_selected_data(which)
     new_content = create_new_data(headers, file_name)
     for header in headers:
         if header == "title":
