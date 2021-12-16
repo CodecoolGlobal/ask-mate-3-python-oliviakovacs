@@ -41,12 +41,13 @@ def add_answer(question_id):
 @app.route('/question/<id>/delete', methods=["GET"])
 def delete_question(id):
     old_data = data_manager.sort(connection.DATA_FILE_PATH_QUESTION)
-    header = connection.DATA_HEADER_QUESTION
     data = data_manager.delete_by_id(old_data, id, "id")
+    header = connection.DATA_HEADER_QUESTION
     connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
     old_answers = data_manager.sort(connection.DATA_FILE_PATH_ANSWER)
     answer = data_manager.delete_by_id(old_answers, id, "question_id")
-    connection.write_data(connection.DATA_FILE_PATH_ANSWER, answer, header)
+    answer_header = connection.DATA_HEADER_ANSWER
+    connection.write_data(connection.DATA_FILE_PATH_ANSWER, answer, answer_header)
     return redirect("/list")
 
 
@@ -55,29 +56,52 @@ def edit_question():
     pass
 
 
-@app.route('/answer/<answer_id>/delete')
-def delete_answer():
-    pass
+@app.route('/answer/<answer_id>/delete', methods=["POST", "GET"])
+def delete_answer(answer_id):
+    old_answers = data_manager.sort(connection.DATA_FILE_PATH_ANSWER)
+    answer = data_manager.delete_by_id(old_answers, answer_id, "id")
+    header = connection.DATA_HEADER_ANSWER
+    connection.write_data(connection.DATA_FILE_PATH_ANSWER, answer, header)
+    question_id = data_manager.which_question(old_answers, answer_id, "id")
+    return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/question/<question_id>/vote_up')
-def vote_up_question():
-    pass
+def vote_up_question(question_id):
+    old_data = data_manager.sort(connection.DATA_FILE_PATH_QUESTION)
+    data = data_manager.incrase_vote(old_data, question_id)
+    header = connection.DATA_HEADER_QUESTION
+    connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
+    return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/question/<question_id>/vote_down')
-def vote_down_question():
-    pass
+def vote_down_question(question_id):
+    old_data = data_manager.sort(connection.DATA_FILE_PATH_QUESTION)
+    data = data_manager.decrease_vote(old_data, question_id)
+    header = connection.DATA_HEADER_QUESTION
+    connection.write_data(connection.DATA_FILE_PATH_QUESTION, data, header)
+    return redirect(url_for("display_question", id=question_id))
 
 
-@app.route('/answer/<question_id>/vote_up')
-def vote_up_answer():
-    pass
+@app.route('/answer/<id>/vote_up')
+def vote_up_answer(id):
+    old_data = data_manager.sort(connection.DATA_FILE_PATH_ANSWER, order="None")
+    data = data_manager.incrase_vote(old_data, id)
+    header = connection.DATA_HEADER_ANSWER
+    connection.write_data(connection.DATA_FILE_PATH_ANSWER, data, header)
+    question_id = data_manager.which_question(old_data, id)
+    return redirect(url_for("display_question", id=question_id))
 
 
-@app.route('/answer/<question_id>/vote_down')
-def vote_down_answer():
-    pass
+@app.route('/answer/<id>/vote_down')
+def vote_down_answer(id):
+    old_data = data_manager.sort(connection.DATA_FILE_PATH_ANSWER, order="None")
+    data = data_manager.decrease_vote(old_data, id)
+    header = connection.DATA_HEADER_ANSWER
+    connection.write_data(connection.DATA_FILE_PATH_ANSWER, data, header)
+    question_id = data_manager.which_question(old_data, id)
+    return redirect(url_for("display_question", id=question_id))
 
 
 if __name__ == "__main__":

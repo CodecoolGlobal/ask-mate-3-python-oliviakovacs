@@ -9,12 +9,25 @@
     <h1>{{ question["title"] }}</h1>
     <h3>{{ question["message"] }}</h3>
     <a href="/question/{{ question["id"] }}/new-answer">Add new answer</a>
-
     <h2><em>Answers:</em></h2>
-    <ol>
+    {% set count = namespace(value=1) %}
     {% for answer in answers %}
-        <li><p>{{ answer['message'] }}</p></li>      {#(<a href="/answer/{{ answer['id'] }}">link</a>)</p>#}
+        <p>{{ count.value }}. {{ answer['message'] }}     {#(<a href="/answer/{{ answer['id'] }}">link</a>)</p>#}
+        {% set count.value = count.value + 1 %}
+        <span aligne="right">Like Comment :</span> <span> {{ answer["vote_number"] }}</span>
+    <a href="/answer/{{ answer["id"] }}/vote_up">↑</a>
+    <a href="/answer/{{ answer["id"] }}/vote_down">↓</a>
+        <form action="/answer/{{ answer['id'] }}/delete">
+    <input type="submit" value="Delete Answer" />
+</form></p>
     {% endfor %}
-    <br><button><a href="/question/{{ question['id'] }}/delete">Delete Question</a></button>
+    <p>
+    <span>Like Question :</span> <span> {{ question["vote_number"] }}</span>
+    <a href="/question/{{ question["id"] }}/vote_up">↑</a>
+    <a href="/question/{{ question["id"] }}/vote_down">↓</a>
+    </p>
+    <br><form action="/question/{{ question['id'] }}/delete">
+    <input type="submit" value="Delete Question" />
+</form>
     </ol>
 {% endblock %}

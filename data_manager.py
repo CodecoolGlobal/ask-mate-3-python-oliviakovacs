@@ -50,13 +50,18 @@ def create_new_data(headers, file):
     return new_data
 
 
-
 def delete_by_id(filename, index, key):
     finale_file = []
     for row in filename:
         if row[key] != index:
             finale_file.append(row)
     return finale_file
+
+
+def which_question(filename, id):
+    for row in filename:
+        if row["id"] == id:
+            return row["question_id"]
 
 
 def add_new_content(file_name, headers, id=0):
@@ -74,3 +79,16 @@ def add_new_content(file_name, headers, id=0):
     existing_content.append(new_content)
     connection.write_data(file_name, existing_content, headers)
 
+
+def incrase_vote(filename, id):
+    for row in filename:
+        if row["id"] == id:
+            row['vote_number'] = str(int(row['vote_number']) + 1)
+            return filename
+
+
+def decrease_vote(filename, id):
+    for row in filename:
+        if row["id"] == id:
+            row['vote_number'] = str(int(row['vote_number']) - 1)
+            return filename
