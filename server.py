@@ -30,7 +30,14 @@ def display_question(id):
 def add_question():
     if request.method == "POST":
         data_manager.add_new_content("question")
-        return redirect("/list")
+        image = request.form['image']
+        if image is None:
+            return redirect(url_for("giv_pics_to_question", link=image))
+        else:
+            data = data_manager.get_selected_data("question")
+            default_sort_data = data_manager.sort(data)
+            return render_template('list.html', questions=default_sort_data)
+
     question = {'title': '', 'message': ''}
     return render_template("form.html", visible_data=question, route="/add-question", is_question=True)
 
@@ -60,7 +67,14 @@ def edit_question(question_id):
         question_message = request.form['message']
         edited_question = data_manager.edit_question(old_data, question_title, question_message, question_id)
         connection.write_data(connection.DATA_FILE_PATH_QUESTION, edited_question, header)
-        return redirect(url_for("display_question", id=question_id))
+        data_manager.add_new_content("question")
+        image = request.form['image']
+        if image is None:
+            return redirect(url_for("display_question", id=question_id))
+        else:
+            new_data = data_manager.give_pics_by_id(question_id, image, old_data)
+            connection.write_data(connection.DATA_FILE_PATH_QUESTION, new_data, header)
+            return redirect(url_for("display_question", id=question_id))
     question = data_manager.get_question_by_id(question_id, "question")
     return render_template("form.html", visible_data=question, route=url_for('edit_question', question_id=question_id), is_question=True)
 
@@ -96,6 +110,25 @@ def vote_down_answer(id):
     old_data = data_manager.change_vote_by_id(id, "answer", "decrease")
     question_id = data_manager.which_question(old_data, id)
     return redirect(url_for("display_question", id=question_id))
+
+@app.route('/question/pics/<link>')
+def giv_pics_to_question(link):
+    header = connection.DATA_HEADER_QUESTION
+    data = data_manager.get_selected_data("question")
+    question_with_pics = data_manager.give_pics(link, data)
+    connection.write_data(connection.DATA_FILE_PATH_QUESTION, question_with_pics, header)
+    default_sort_data = data_manager.sort(data)
+    return render_template('list.html', questions=default_sort_data)
+
+
+@app.route('/answer/pics/<link>')
+def giv_pics_to_answer(link):
+    header = connection.DATA_HEADER_ANSWER
+    data = data_manager.get_selected_data("answer")
+    answer_with_pics = data_manager.give_pics(link, data)
+    connection.write_data(connection.DATA_FILE_PATH_QUESTION, answer_with_pics, header)
+    default_sort_data = data_manager.sort(data)
+    return render_template('list.html', questions=default_sort_data)
 
 
 if __name__ == "__main__":

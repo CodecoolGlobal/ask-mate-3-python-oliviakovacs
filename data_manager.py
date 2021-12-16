@@ -134,3 +134,17 @@ def change_vote_by_id(content_id, content_type, direction):
     data = change_vote(old_data, content_id, direction)
     connection.write_data(file_path, data, header)
     return old_data
+
+
+def give_pics(link, datas):
+    datas = sort(datas)
+    for data in datas:
+        data["image"] = link
+        return datas
+
+
+def give_pics_by_id(question_id, image, datas):
+    for data in datas:
+        if data["id"] == question_id:
+            data["image"] = image
+            return datas
