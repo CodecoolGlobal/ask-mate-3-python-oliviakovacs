@@ -9,7 +9,8 @@ app = Flask(__name__)
 @app.route("/list")
 def main_page():
     data = data_manager.get_questions()
-    return render_template('main.html', questions=data)
+    headers = data_manager.get_question_headers()
+    return render_template('main.html', questions=data, headers=headers)
 
 @app.route("/question/<question_id>/new-comment")
 

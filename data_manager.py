@@ -36,6 +36,17 @@ def get_answers_by_question_id(cursor, id):
     return cursor.fetchall()
 
 
+@connection.connection_handler
+def get_question_headers(cursor):
+    query = """
+            SELECT *
+            FROM question
+            WHERE False
+            """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
 def get_selected_data(choice):
     if choice == "question":
         data = connection.get_data(connection.DATA_FILE_PATH_QUESTION)
@@ -165,3 +176,5 @@ def give_pics_by_id(question_id, image, datas):
         if data["id"] == question_id:
             data["image"] = image
             return datas
+
+
