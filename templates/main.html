@@ -13,6 +13,11 @@
                     <option value="{{ header }}">{{ header }}</option>
                 {% endfor %}
             </select>
+            <label for="direction-input">Direction:</label>
+            <select id="direction-input" name="direction">
+                <option value="ASC">Ascending</option>
+                <option value="DESC">Descending</option>
+            </select>
             <button type="submit">Order</button>
         </form>
     </div>

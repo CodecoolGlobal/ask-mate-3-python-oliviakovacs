@@ -9,11 +9,18 @@ app = Flask(__name__)
 
 
 @app.route("/")
-@app.route("/list")
+@app.route("/list", methods=['GET'])
 def main_page():
-    data = data_manager.get_questions()
+    if request.args:
+        order = request.args['order-by']
+        direction = request.args['direction']
+        data = data_manager.get_questions(order, direction)
+        headers = data_manager.get_question_headers()
+        return render_template('main.html', questions=data, headers=headers)
+    data = data_manager.get_questions('submission_time', 'DESC')
     headers = data_manager.get_question_headers()
     return render_template('main.html', questions=data, headers=headers)
+
 
 @app.route("/question/<question_id>/new-comment")
 
