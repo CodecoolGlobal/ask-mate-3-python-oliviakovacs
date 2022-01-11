@@ -8,14 +8,8 @@ app = Flask(__name__)
 @app.route("/")
 @app.route("/list")
 def main_page():
-    data = data_manager.get_selected_data("question")
-    if request.args.get("order_by") is not None:
-        key = request.args.get("order_by")
-        order = request.args.get("order_direction")
-        sort_data = data_manager.sort(data, key, order)
-        return render_template("list.html", questions=sort_data)
-    default_sort_data = data_manager.sort(data)
-    return render_template('list.html', questions=default_sort_data)
+    data = data_manager.get_questions()
+    return render_template('test.html', questions=data)
 
 
 # @app.route("/question")

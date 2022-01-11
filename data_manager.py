@@ -2,6 +2,16 @@ import connection
 import time
 from flask import request
 
+@connection.connection_handler
+def get_questions(cursor):
+    query = '''
+    SELECT *
+    FROM question
+    ORDER BY submission_time;
+    '''
+    cursor.execute(query)
+    return cursor.fetchall()
+
 
 def get_selected_data(choice):
     if choice == "question":
