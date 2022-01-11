@@ -25,8 +25,8 @@ def main_page():
 @app.route("/question/<int:id>")
 def display_question(id):
     question = data_manager.get_question_by_id(id)
-    # answers = data_manager.get_answers_by_question_id(id, 'answer')
-    return render_template("question_by_id.html", question=question)
+    answers = data_manager.get_answers_by_question_id(id)
+    return render_template("question_by_id.html", question=question, answers=answers)
 
 
 @app.route("/add-question", methods=["POST", "GET"])

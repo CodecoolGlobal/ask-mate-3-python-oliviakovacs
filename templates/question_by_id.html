@@ -3,16 +3,20 @@
 {% block title %} Question {% endblock %}
 
 {% block body %}
-    {%  for data in question %}
-    <h2> {{ data.title }} </h2>
-    <h3> {{ data.message }} </h3>
-    <p> Views: {{ data.view_number }} , Votes: {{ data.vote_number }}</p>
-    {% endfor %}
-    {#<div>
-       <ol>
+    <div>
+        {%  for data in question %}
+        <h2> {{ data.title }} </h2>
+        <h3> {{ data.message }} </h3>
+        <p> Views: {{ data.view_number }}  Votes: {{ data.vote_number }}</p>
+        {% endfor %}
+    </div>
+    <div>
+    <table>
+        <tr><th>Answers</th><th>Votes</th></tr>
             {% for answer in answers %}
-                <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
+{#                <li> <a href="/question/{{ question.id }}">{{ data.answer.message }}</a></li>#}
+                <tr><td>{{ answer.message }}</td><td>{{ answer.vote_number }}</td></tr>
             {% endfor %}
-        </ol>
-    </div>#}
+    </table>
+    </div>
 {% endblock %}
