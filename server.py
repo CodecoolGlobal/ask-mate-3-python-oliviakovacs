@@ -12,7 +12,8 @@ app = Flask(__name__)
 @app.route("/list")
 def main_page():
     data = data_manager.get_questions()
-    return render_template('main.html', questions=data)
+    headers = data_manager.get_question_headers()
+    return render_template('main.html', questions=data, headers=headers)
 
 @app.route("/question/<question_id>/new-comment")
 
@@ -28,8 +29,8 @@ def main_page():
 @app.route("/question/<int:id>")
 def display_question(id):
     question = data_manager.get_question_by_id(id)
-    # answers = data_manager.get_answers_by_question_id(id, 'answer')
-    return render_template("question_by_id.html", question=question)
+    answers = data_manager.get_answers_by_question_id(id)
+    return render_template("question_by_id.html", question=question, answers=answers)
 
 
 @app.route("/add-question", methods=["POST", "GET"])

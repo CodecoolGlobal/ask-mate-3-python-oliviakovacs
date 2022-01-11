@@ -2,6 +2,7 @@ import connection
 import time
 from flask import request
 
+
 @connection.connection_handler
 def get_questions(cursor):
     query = '''
@@ -12,12 +13,6 @@ def get_questions(cursor):
     cursor.execute(query)
     return cursor.fetchall()
 
-#
-# def get_question_by_id(id, option):
-#     questions = get_selected_data(option)
-#     for question in questions:
-#         if question["id"] == id:
-#             return question
 
 @connection.connection_handler
 def get_question_by_id(cursor, id):
@@ -27,6 +22,28 @@ def get_question_by_id(cursor, id):
         WHERE id = %(q)s
         '''
     cursor.execute(query, {'q': id})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_answers_by_question_id(cursor, id):
+    query = '''
+            SELECT message, vote_number
+            FROM answer
+            WHERE question_id = %(q)s
+            '''
+    cursor.execute(query, {'q': id})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_question_headers(cursor):
+    query = """
+            SELECT *
+            FROM question
+            WHERE False
+            """
+    cursor.execute(query)
     return cursor.fetchall()
 
 
@@ -48,17 +65,6 @@ def sort(data, type="submission_time", order="descending"):
     if order == "descending":
         return data[::-1]
     return data
-
-
-
-
-def get_answers_by_question_id(question_id, option):
-    answers = get_selected_data(option)
-    question_answers = []
-    for answer in answers:
-        if answer["question_id"] == question_id:
-            question_answers.append(answer)
-    return question_answers
 
 
 def create_new_data(headers, file):
@@ -167,3 +173,5 @@ def give_pics_by_id(question_id, image, datas):
         if data["id"] == question_id:
             data["image"] = image
             return datas
+
+

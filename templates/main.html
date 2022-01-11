@@ -4,6 +4,19 @@
 
 {% block body %}
     <h1> Questions list </h1>
+
+    <div>
+        <form action="/list">
+            <label for="sort-input">Sort by:</label>
+            <select id="sort-input" name="order-by">
+                {% for header in headers %}
+                    <option value="{{ header }}">{{ header }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Order</button>
+        </form>
+    </div>
+
     <div>
         <ol>
             {% for question in questions %}
