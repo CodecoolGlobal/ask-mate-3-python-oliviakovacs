@@ -40,59 +40,6 @@ def get_question_headers(cursor):
     return colnames
 
 
-def get_selected_data(choice):
-    if choice == "question":
-        data = connection.get_data(connection.DATA_FILE_PATH_QUESTION)
-    elif choice == "answer":
-        data = connection.get_data(connection.DATA_FILE_PATH_ANSWER)
-    return data
-
-
-def sort(data, type="submission_time", order="descending"):
-    for i in range(len(data)-1):
-        for j in range(len(data)-i-1):
-            if data[j][type].isnumeric() and float(data[j][type]) > float(data[j+1][type]):
-                data[j], data[j+1] = data[j+1], data[j]
-            elif data[j][type] > data[j+1][type]:
-                data[j], data[j+1] = data[j+1], data[j]
-    if order == "descending":
-        return data[::-1]
-    return data
-
-
-def create_new_data(headers, file):
-    file_list = connection.get_data(file)
-    ids = [0]
-    for file in file_list:
-        ids.append(int(file["id"]))
-    new_data = {}
-    for header in headers:
-        if header == "id":
-            new_data.update({"id": max(ids) + 1})
-        if header == "submission_time":
-            new_data.update({"submission_time": time.time()})
-        if header == "vote_number":
-            new_data.update({"vote_number": 0})
-        if header == "view_number":
-            new_data.update({"view_number": 0})
-    return new_data
-
-
-def delete_by_id(filename, index, key):
-    final_file = []
-    for row in filename:
-        if row[key] != index:
-            final_file.append(row)
-    return final_file
-
-
-def which_question(filename, id):
-    for row in filename:
-        if row["id"] == id:
-            return row["question_id"]
-
-
-
 @connection.connection_handler
 def get_applicant_ids(cursor):
     query = """
@@ -110,6 +57,7 @@ def add_new_content(cursor,new_question_data):
     """
     cursor.execute(query, {'id': new_question_data[0], 's_t': new_question_data[1], 'v_n': new_question_data[2],
     'vo_nu': new_question_data[3], 't_l': new_question_data[4], 'm_e': new_question_data[5]})
+
 
 def change_vote(filename, id, direction):
     for row in filename:
