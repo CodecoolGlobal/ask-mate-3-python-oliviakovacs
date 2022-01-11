@@ -1,16 +1,13 @@
 import connection
 import time
 from flask import request
+from psycopg2 import sql
 
 
 @connection.connection_handler
-def get_questions(cursor):
-    query = '''
-    SELECT *
-    FROM question
-    ORDER BY submission_time;
-    '''
-    cursor.execute(query)
+def get_questions(cursor, order="submission_time", direction="DESC"):
+    query = sql.SQL("SELECT * FROM question ORDER BY {order} {direction}")
+    cursor.execute(query.format(order=sql.Identifier(order), direction=sql.SQL(direction)))
     return cursor.fetchall()
 
 
@@ -38,13 +35,9 @@ def get_answers_by_question_id(cursor, id):
 
 @connection.connection_handler
 def get_question_headers(cursor):
-    query = """
-            SELECT *
-            FROM question
-            WHERE False
-            """
-    cursor.execute(query)
-    return cursor.fetchall()
+    cursor.execute("Select * FROM question LIMIT 0")
+    colnames = [desc[0] for desc in cursor.description]
+    return colnames
 
 
 def get_selected_data(choice):
