@@ -43,7 +43,7 @@ def display_question(id):
 @app.route("/add-question", methods=["POST", "GET"])
 def add_question():
     if request.method == "POST":
-        max_id = data_manager.get_applicant_ids()
+        max_id = data_manager.get_question_ids()
         now = datetime.datetime.now()
         new_question=[]
         new_question.append(max_id[0]['?column?'])
@@ -53,7 +53,7 @@ def add_question():
         new_question.append(request.form.get("title"))
         new_question.append(request.form.get("message"))
         #new_question.append(request.form.get(pics))
-        data_manager.add_new_content(new_question)
+        data_manager.add_new_question(new_question)
         # Ide kell majd a Pics!!!
 
         return redirect('/list')
@@ -65,9 +65,19 @@ def add_question():
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
 def add_answer(question_id):
     if request.method == "POST":
-        data_manager.add_new_content('answer', question_id)
+        max_id = data_manager.get_question_ids()
+        max_answer_id = data_manager.get_answer_ids()
+        now = datetime.datetime.now()
+        new_answer = []
+        new_answer.append(max_answer_id[0]['?column?'])
+        new_answer.append(now)
+        new_answer.append(0)
+        new_answer.append(question_id)
+        new_answer.append(request.form.get("message"))
+        #new_question.append(pic)
+        data_manager.add_new_answer(new_answer)
         return redirect(f"/question/{question_id}")
-    question = data_manager.get_question_by_id(question_id, "answer")
+    question = {'title': '', 'message': ''}
     return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False )
 
 

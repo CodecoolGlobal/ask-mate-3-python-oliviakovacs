@@ -7,6 +7,7 @@
 {% block body %}
 
     <h1>{{ question["title"] }}</h1>
+    <div> <a href="/question/{{ question["id"] }}/new-answer">Add New Answer</a></div>
     <p>
         <span>Like Question :</span> <span> {{ question["vote_number"] }}</span>
         <a href="/question/{{ question["id"] }}/vote_up">↑</a>

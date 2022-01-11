@@ -14,7 +14,7 @@ def get_questions(cursor, order="submission_time", direction="DESC"):
 @connection.connection_handler
 def get_question_by_id(cursor, id):
     query = '''
-        SELECT title, message, vote_number, view_number
+        SELECT title, message, vote_number, view_number, id
         FROM question
         WHERE id = %(q)s
         '''
@@ -41,7 +41,16 @@ def get_question_headers(cursor):
 
 
 @connection.connection_handler
-def get_applicant_ids(cursor):
+def get_answer_ids(cursor):
+    query = """
+        SELECT MAX(id)+1
+        FROM answer"""
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_question_ids(cursor):
     query = """
     SELECT MAX(id)+1
     FROM question"""
@@ -50,13 +59,23 @@ def get_applicant_ids(cursor):
 
 
 @connection.connection_handler
-def add_new_content(cursor,new_question_data):
+def add_new_question(cursor,new_question_data):
     query = """
        INSERT INTO question
        VALUES (%(id)s,%(s_t)s,%(v_n)s,%(vo_nu)s,%(t_l)s,%(m_e)s);
     """
     cursor.execute(query, {'id': new_question_data[0], 's_t': new_question_data[1], 'v_n': new_question_data[2],
     'vo_nu': new_question_data[3], 't_l': new_question_data[4], 'm_e': new_question_data[5]})
+
+
+@connection.connection_handler
+def add_new_answer(cursor,new_question_data):
+    query = """
+       INSERT INTO answer
+       VALUES (%(id)s,%(s_t)s,%(v_n)s,%(q_i)s,%(m_a)s);
+    """
+    cursor.execute(query, {'id': new_question_data[0], 's_t': new_question_data[1], 'v_n': new_question_data[2],
+    'q_i': new_question_data[3], 'm_a': new_question_data[4]})
 
 
 def change_vote(filename, id, direction):

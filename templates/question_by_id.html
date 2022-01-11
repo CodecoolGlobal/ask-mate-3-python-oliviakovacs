@@ -6,6 +6,7 @@
     <div>
         {%  for data in question %}
         <h2> {{ data.title }} </h2>
+            <div> <a href="/question/{{ data.id }}/new-answer">Add New Answer</a></div>
         <h3> {{ data.message }} </h3>
         <p> Views: {{ data.view_number }}  Votes: {{ data.vote_number }}</p>
         {% endfor %}
