@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %} Question {% endblock %}
+
+{% block body %}
+    {%  for data in question %}
+    <h2> {{ data.title }} </h2>
+    <h3> {{ data.message }} </h3>
+    <p> Views: {{ data.view_number }} , Votes: {{ data.vote_number }}</p>
+    {% endfor %}
+    {#<div>
+       <ol>
+            {% for answer in answers %}
+                <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
+            {% endfor %}
+        </ol>
+    </div>#}
+{% endblock %}

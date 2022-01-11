@@ -12,6 +12,23 @@ def get_questions(cursor):
     cursor.execute(query)
     return cursor.fetchall()
 
+#
+# def get_question_by_id(id, option):
+#     questions = get_selected_data(option)
+#     for question in questions:
+#         if question["id"] == id:
+#             return question
+
+@connection.connection_handler
+def get_question_by_id(cursor, id):
+    query = '''
+        SELECT title, message, vote_number, view_number
+        FROM question
+        WHERE id = %(q)s
+        '''
+    cursor.execute(query, {'q': id})
+    return cursor.fetchall()
+
 
 def get_selected_data(choice):
     if choice == "question":
@@ -33,11 +50,6 @@ def sort(data, type="submission_time", order="descending"):
     return data
 
 
-def get_question_by_id(id, option):
-    questions = get_selected_data(option)
-    for question in questions:
-        if question["id"] == id:
-            return question
 
 
 def get_answers_by_question_id(question_id, option):
