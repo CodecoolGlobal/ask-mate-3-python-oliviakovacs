@@ -43,7 +43,7 @@ def get_question_headers(cursor):
 @connection.connection_handler
 def get_answer_ids(cursor):
     query = """
-        SELECT MAX(id)+1
+        SELECT MAX(id)+1 as maximum
         FROM answer"""
     cursor.execute(query)
     return cursor.fetchall()
@@ -52,14 +52,14 @@ def get_answer_ids(cursor):
 @connection.connection_handler
 def get_question_ids(cursor):
     query = """
-    SELECT MAX(id)+1
+    SELECT MAX(id)+1 as maximum
     FROM question"""
     cursor.execute(query)
     return cursor.fetchall()
 
 
 @connection.connection_handler
-def add_new_question(cursor,new_question_data):
+def add_new_question(cursor, new_question_data):
     query = """
        INSERT INTO question
        VALUES (%(id)s,%(s_t)s,%(v_n)s,%(vo_nu)s,%(t_l)s,%(m_e)s);
@@ -69,7 +69,7 @@ def add_new_question(cursor,new_question_data):
 
 
 @connection.connection_handler
-def add_new_answer(cursor,new_question_data):
+def add_new_answer(cursor, new_question_data):
     query = """
        INSERT INTO answer
        VALUES (%(id)s,%(s_t)s,%(v_n)s,%(q_i)s,%(m_a)s);
@@ -78,60 +78,37 @@ def add_new_answer(cursor,new_question_data):
     'q_i': new_question_data[3], 'm_a': new_question_data[4]})
 
 
-def change_vote(filename, id, direction):
-    for row in filename:
-        if row["id"] == id and direction == "increase":
-            row['vote_number'] = str(int(row['vote_number']) + 1)
-        elif row["id"] == id and direction == "decrease":
-            row['vote_number'] = str(int(row['vote_number']) - 1)
-    return filename
+@connection.connection_handler
+def delete_question_by_id(cursor, id):
+    query = """
+    DELETE
+    FROM question
+    WHERE id = %(q_id)s"""
+    cursor.execute(query, {'q_id':id})
 
 
-def edit_question(old, new_title, new_message, id,):
-    for row in old:
-        if row["id"] == id:
-            row["title"] = new_title
-            row["message"] = new_message
-            return old
+@connection.connection_handler
+def delete_answer_by_question_id(cursor, id):
+    query = """
+       DELETE
+       FROM answer
+       WHERE question_id = %(q_id)s"""
+    cursor.execute(query, {'q_id': id})
 
 
-def delete_content_by_id(content_id, content_type):
-    if content_type == "question":
-        file_path = connection.DATA_FILE_PATH_QUESTION
-        header = connection.DATA_HEADER_QUESTION
-    elif content_type == "answer":
-        file_path = connection.DATA_FILE_PATH_ANSWER
-        header = connection.DATA_HEADER_ANSWER
-    old_data = get_selected_data(content_type)
-    data = delete_by_id(old_data, content_id, "id")
-    connection.write_data(file_path, data, header)
-    return old_data
+@connection.connection_handler
+def delete_comment_by_question_id(cursor, id):
+    query = """
+       DELETE
+       FROM comment
+       WHERE question_id = %(q_id)s"""
+    cursor.execute(query, {'q_id': id})
 
 
-def change_vote_by_id(content_id, content_type, direction):
-    if content_type == "question":
-        file_path = connection.DATA_FILE_PATH_QUESTION
-        header = connection.DATA_HEADER_QUESTION
-    elif content_type == "answer":
-        file_path = connection.DATA_FILE_PATH_ANSWER
-        header = connection.DATA_HEADER_ANSWER
-    old_data = get_selected_data(content_type)
-    data = change_vote(old_data, content_id, direction)
-    connection.write_data(file_path, data, header)
-    return old_data
-
-
-def give_pics(link, datas):
-    datas = sort(datas)
-    for data in datas:
-        data["image"] = link
-        return datas
-
-
-def give_pics_by_id(question_id, image, datas):
-    for data in datas:
-        if data["id"] == question_id:
-            data["image"] = image
-            return datas
-
-
+@connection.connection_handler
+def delete_comment_by_answer_id(cursor, id):
+    query = """
+       DELETE
+       FROM comment c 
+       WHERE c.answer_id = (SELECT a.id FROM answer a WHERE a.id = %(q_id)s)"""
+    cursor.execute(query, {'q_id': id})

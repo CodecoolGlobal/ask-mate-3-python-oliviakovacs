@@ -46,7 +46,7 @@ def add_question():
         max_id = data_manager.get_question_ids()
         now = datetime.datetime.now()
         new_question=[]
-        new_question.append(max_id[0]['?column?'])
+        new_question.append(max_id[0]['maximum'])
         new_question.append(now)
         new_question.append(0)
         new_question.append(0)
@@ -69,7 +69,7 @@ def add_answer(question_id):
         max_answer_id = data_manager.get_answer_ids()
         now = datetime.datetime.now()
         new_answer = []
-        new_answer.append(max_answer_id[0]['?column?'])
+        new_answer.append(max_answer_id[0]['maximum'])
         new_answer.append(now)
         new_answer.append(0)
         new_answer.append(question_id)
@@ -83,8 +83,9 @@ def add_answer(question_id):
 
 @app.route('/question/<id>/delete', methods=["GET"])
 def delete_question(id):
-    data_manager.delete_content_by_id(id, "question")
-    data_manager.delete_content_by_id(id, "answer")
+    data_manager.delete_comment_by_question_id(id)
+    data_manager.delete_answer_by_question_id(id)
+    data_manager.delete_question_by_id(id)
     return redirect("/list")
 
 

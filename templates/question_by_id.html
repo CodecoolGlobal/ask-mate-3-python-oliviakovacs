@@ -8,6 +8,9 @@
         <h2> {{ data.title }} </h2>
             <div> <a href="/question/{{ data.id }}/new-answer">Add New Answer</a></div>
         <h3> {{ data.message }} </h3>
+        <form action="/question/{{ data.id }}/delete">
+            <input type="submit" value="Delete Question" /><br><br>
+        </form>
         <p> Views: {{ data.view_number }}  Votes: {{ data.vote_number }}</p>
         {% endfor %}
     </div>
