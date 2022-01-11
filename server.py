@@ -9,7 +9,9 @@ app = Flask(__name__)
 @app.route("/list")
 def main_page():
     data = data_manager.get_questions()
-    return render_template('test.html', questions=data)
+    return render_template('main.html', questions=data)
+
+@app.route("/question/<question_id>/new-comment")
 
 
 # @app.route("/question")
@@ -129,5 +131,5 @@ if __name__ == "__main__":
     app.run(
         host='0.0.0.0',
         debug=True,
-        port=5000
+        port=5001
     )
