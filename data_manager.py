@@ -92,27 +92,24 @@ def which_question(filename, id):
             return row["question_id"]
 
 
-def add_new_content(which, id=0):
-    if which == "question":
-        file_name = connection.DATA_FILE_PATH_QUESTION
-        headers = connection.DATA_HEADER_QUESTION
-    elif which == "answer":
-        file_name = connection.DATA_FILE_PATH_ANSWER
-        headers = connection.DATA_HEADER_ANSWER
-    existing_content = get_selected_data(which)
-    new_content = create_new_data(headers, file_name)
-    for header in headers:
-        if header == "title":
-            new_content.update({header: request.form["title"]})
-        if header == "message":
-            new_content.update({header: request.form["message"]})
-        if header == "question_id":
-            new_content.update({header: id})
-        # if header == "image":
-        # new_question.update({header: request.form["image"]})
-    existing_content.append(new_content)
-    connection.write_data(file_name, existing_content, headers)
 
+@connection.connection_handler
+def get_applicant_ids(cursor):
+    query = """
+    SELECT MAX(id)+1
+    FROM question"""
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def add_new_content(cursor,new_question_data):
+    query = """
+       INSERT INTO question
+       VALUES (%(id)s,%(s_t)s,%(v_n)s,%(vo_nu)s,%(t_l)s,%(m_e)s);
+    """
+    cursor.execute(query, {'id': new_question_data[0], 's_t': new_question_data[1], 'v_n': new_question_data[2],
+    'vo_nu': new_question_data[3], 't_l': new_question_data[4], 'm_e': new_question_data[5]})
 
 def change_vote(filename, id, direction):
     for row in filename:

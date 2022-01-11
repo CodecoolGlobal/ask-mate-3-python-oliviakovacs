@@ -25,6 +25,7 @@
         <li><p><p>{{ question['title'] }} (<a href="/question/{{ question['id'] }}">link</a>){% if question["image"]|length > 1  %}<br><br><img src={{ url_for('static' ,filename=question['image']) }}><br>{% endif  %}</p></li>
     {% endfor %}
     </ol>
+
     <a href="/add-question">Add new question</a>
 {% endblock %}
 
