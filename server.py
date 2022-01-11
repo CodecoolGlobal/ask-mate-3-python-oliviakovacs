@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 import data_manager
 import connection
+import datetime
+
+
 
 app = Flask(__name__)
 
@@ -32,14 +35,20 @@ def display_question(id):
 @app.route("/add-question", methods=["POST", "GET"])
 def add_question():
     if request.method == "POST":
-        data_manager.add_new_content("question")
-        image = request.form['image']
-        if image is None:
-            return redirect(url_for("giv_pics_to_question", link=image))
-        else:
-            data = data_manager.get_selected_data("question")
-            default_sort_data = data_manager.sort(data)
-            return render_template('list.html', questions=default_sort_data)
+        max_id = data_manager.get_applicant_ids()
+        now = datetime.datetime.now()
+        new_question=[]
+        new_question.append(max_id[0]['?column?'])
+        new_question.append(now)
+        new_question.append(0)
+        new_question.append(0)
+        new_question.append(request.form.get("title"))
+        new_question.append(request.form.get("message"))
+        #new_question.append(request.form.get(pics))
+        data_manager.add_new_content(new_question)
+        # Ide kell majd a Pics!!!
+
+        return redirect('/list')
 
     question = {'title': '', 'message': ''}
     return render_template("form.html", visible_data=question, route="/add-question", is_question=True)
