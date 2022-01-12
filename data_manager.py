@@ -180,3 +180,14 @@ def get_answer_by_id(cursor, id):
     cursor.execute(query, {'q': id})
     return cursor.fetchall()
 
+@connection.connection_handler
+def get_latest_questions(cursor):
+    query = """
+    SELECT * 
+    FROM question
+    ORDER BY submission_time DESC LIMIT 5
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+

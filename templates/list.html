@@ -1,13 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Main page{% endblock %}
+{% block title %}Question{% endblock %}
 
 {% block body %}
-    <ol>
-    {% for question in questions %}
-            <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
-    {% endfor %}
-    </ol>
+    <h1> Questions list </h1>
+
     <div>
         <form action="/list">
             <label for="sort-input">Sort by:</label>
@@ -29,15 +26,9 @@
         <ol>
             {% for question in questions %}
                 <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
-                <div>
-                {% if question.image %}
-                <img src="/static/{{ question.image }}">
-                {% endif %}
-                </div>
             {% endfor %}
         </ol>
     </div>
     <div> <a href="/add-question">Add New Question</a>
     </div>
-    <a href="/list">See all questions</a>
 {% endblock %}
