@@ -59,7 +59,7 @@ def add_question():
         return redirect('/list')
 
     question = {'title': '', 'message': ''}
-    return render_template("ask_mate_1/form.html", visible_data=question, route="/add-question", is_question=True)
+    return render_template("form.html", visible_data=question, route="/add-question", is_question=True)
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
