@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+     Edit question
+{% endblock %}
+
+{% block body %}
+    <div id="edit_question">
+        <form action="/question/{{q_id}}/edit" method="post">
+
+            {% for data in question %}
+                <label for="question_title">Question</label><br>
+                <textarea id="question_title" name="question_title" rows="4" cols="50">{{ data.title }} </textarea><br>
+                <label for="question_message">Description</label><br>
+                <textarea id="question_message" name="question_message" rows="4" cols="50">{{ data.message }} </textarea><br>
+            {% endfor %}
+            <button type="submit"> Save </button>
+        </form>
+    </div>
+
+{% endblock %}

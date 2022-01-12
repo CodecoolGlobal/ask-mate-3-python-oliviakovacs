@@ -1,4 +1,4 @@
-{% extends "ask_mate_1/base.html" %}
+{% extends "base.html" %}
 
 {% block title %} Question {% endblock %}
 
@@ -6,6 +6,7 @@
     <div>
         {%  for data in question %}
         <h2> {{ data.title }} </h2>
+            <div> <a href="/question/{{ data.id }}/edit">Edit question</a></div>
             <div> <a href="/question/{{ data.id }}/new-answer">Add New Answer</a></div>
         <h3> {{ data.message }} </h3>
         <form action="/question/{{ data.id }}/delete">
