@@ -19,7 +19,18 @@
         <tr><th>Answers</th><th>Votes</th></tr>
             {% for answer in answers %}
 {#                <li> <a href="/question/{{ question.id }}">{{ data.answer.message }}</a></li>#}
-                <tr><td>{{ answer.message }}</td><td>{{ answer.vote_number }}</td></tr>
+                <tr>
+                    <td>{{ answer.message }}</td>
+                    <td>{{ answer.vote_number }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <form action="/answer/{{ answer.id }}/delete">
+                            <input type="submit" value="Delete Answer" />
+                        </form>
+                    </td>
+                </tr>
+
             {% endfor %}
     </table>
     </div>

@@ -33,7 +33,7 @@ def main_page():
 #     return render_template("question.html", question=question, answers=answers)
 
 
-@app.route("/question/<int:id>")
+@app.route("/question/<id>")
 def display_question(id):
     question = data_manager.get_question_by_id(id)
     answers = data_manager.get_answers_by_question_id(id)
@@ -112,9 +112,9 @@ def edit_question(question_id):
 
 @app.route('/answer/<answer_id>/delete', methods=["POST", "GET"])
 def delete_answer(answer_id):
-    old_answers = data_manager.delete_content_by_id(answer_id, "answer")
-    question_id = data_manager.which_question(old_answers, answer_id)
-    return redirect(url_for("display_question", id=question_id))
+    data_manager.delete_comment_by_answer_id(answer_id)
+    return_question_id = data_manager.delete_answer_by_id(answer_id)
+    return redirect("/question/" + str(return_question_id['question_id']))
 
 
 @app.route('/question/<question_id>/vote_up')

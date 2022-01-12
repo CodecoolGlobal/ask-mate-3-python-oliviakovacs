@@ -25,7 +25,7 @@ def get_question_by_id(cursor, id):
 @connection.connection_handler
 def get_answers_by_question_id(cursor, id):
     query = '''
-            SELECT message, vote_number
+            SELECT message, vote_number, id
             FROM answer
             WHERE question_id = %(q)s
             '''
@@ -112,3 +112,14 @@ def delete_comment_by_answer_id(cursor, id):
        FROM comment c 
        WHERE c.answer_id = (SELECT a.id FROM answer a WHERE a.id = %(q_id)s)"""
     cursor.execute(query, {'q_id': id})
+
+
+@connection.connection_handler
+def delete_answer_by_id(cursor, id):
+    query = """
+           DELETE
+           FROM answer
+           WHERE id = %(q_id)s
+           RETURNING question_id"""
+    cursor.execute(query, {'q_id': id})
+    return cursor.fetchone()
