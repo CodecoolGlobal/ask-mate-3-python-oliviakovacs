@@ -118,7 +118,6 @@ def vote_up_question(question_id):
 def vote_down_question(question_id):
     change = -1
     data_manager.change_vote_by_id(["question", question_id,  change, "id"])
-    data_manager.se
     return redirect(url_for("display_question", id=question_id))
 
 
