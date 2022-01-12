@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Question{% endblock %}
+
+{% block body %}
+    <h1> Questions list </h1>
+
+    <div>
+        <form action="/list">
+            <label for="sort-input">Sort by:</label>
+            <select id="sort-input" name="order-by">
+                {% for header in headers %}
+                    <option value="{{ header }}">{{ header }}</option>
+                {% endfor %}
+            </select>
+            <label for="direction-input">Direction:</label>
+            <select id="direction-input" name="direction">
+                <option value="ASC">Ascending</option>
+                <option value="DESC">Descending</option>
+            </select>
+            <button type="submit">Order</button>
+        </form>
+    </div>
+
+    <div>
+        <ol>
+            {% for question in questions %}
+                <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
+            {% endfor %}
+        </ol>
+    </div>
+    <div> <a href="/add-question">Add New Question</a>
+    </div>
+{% endblock %}

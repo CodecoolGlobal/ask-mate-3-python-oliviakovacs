@@ -156,3 +156,14 @@ def edit_question(cursor, id, question_title, question_message):
     cursor.execute(query, {'q_id': id, 'q_t': question_title, 'q_m': question_message})
 
 
+@connection.connection_handler
+def get_latest_questions(cursor):
+    query = """
+    SELECT * 
+    FROM question
+    ORDER BY submission_time DESC LIMIT 5
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
