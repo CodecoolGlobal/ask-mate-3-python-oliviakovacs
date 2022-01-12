@@ -16,7 +16,7 @@
         <form action="/question/{{ data.id }}/delete">
             <input type="submit" value="Delete Question" /><br><br>
         </form>
-        <p> Views: {{ data.view_number }}  Votes: {{ data.vote_number }}</p>
+        <p> Views: {{ data.view_number }}  Votes: {{ data.vote_number }} </p>
         {% endfor %}
     </div>
     <div>
@@ -26,10 +26,13 @@
 {#                <li> <a href="/question/{{ question.id }}">{{ data.answer.message }}</a></li>#}
                 <tr>
                     <td>{{ answer.message }}</td>
-                    <td>{{ answer.vote_number }}</td>
+                    <td>{{ answer.vote_number }} <a href="/answer/{{ answer.id }}/vote_up">↑</a> <a href="/answer/{{ answer.id }}/vote_down">↓</a></td>
                 </tr>
                 <tr>
                     <td>
+                        <form action="/answer/{{ answer.id }}/edit">
+                            <input type="submit" value="Edit Answer" />
+                        </form>
                         <form action="/answer/{{ answer.id }}/delete">
                             <input type="submit" value="Delete Answer" />
                         </form>

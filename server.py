@@ -88,6 +88,7 @@ def add_answer(question_id):
 
 @app.route('/question/<id>/delete', methods=["GET"])
 def delete_question(id):
+    data_manager.delete_comment_by_answer_id(id)
     data_manager.delete_comment_by_question_id(id)
     data_manager.delete_answer_by_question_id(id)
     data_manager.delete_question_by_id(id)
@@ -103,6 +104,18 @@ def edit_question(question_id):
         return redirect(url_for("display_question", id=question_id))
     question = data_manager.get_question_by_id(question_id)
     return render_template("edit_question.html", question=question, q_id=question_id)
+
+
+@app.route('/answer/<answer_id>/edit', methods=["POST", "GET"])
+def edit_answer(answer_id):
+    if request.method == "POST":
+        message = request.form["answer_message"]
+        answer = data_manager.edit_answer(answer_id, message)
+        question_id = answer['question_id']
+        print(question_id)
+        return redirect(url_for("display_question", id=question_id))
+    answer = data_manager.get_answer_by_id(answer_id)
+    return render_template("edit_answer.html", answer=answer, a_id=answer_id)
 
 
 @app.route('/answer/<answer_id>/delete', methods=["POST", "GET"])
@@ -123,24 +136,26 @@ def vote_up_question(question_id):
 def vote_down_question(question_id):
     change = -1
     data_manager.change_vote_by_id(["question", question_id,  change, "id"])
-    data_manager.se
     return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/answer/<id>/vote_up')
 def vote_up_answer(id):
     change = 1
-    data_manager.change_vote_by_id(["answer", id, change, "id"])
     question_id = data_manager.get_question_id_by_answer(id)
+    question_id = question_id['question_id']
+    data_manager.change_vote_by_id(["answer", id, change, "id"])
     return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/answer/<id>/vote_down')
 def vote_down_answer(id):
     change = -1
-    data_manager.change_vote_by_id(["answer", id, change, "id"])
     question_id = data_manager.get_question_id_by_answer(id)
+    question_id = question_id['question_id']
+    data_manager.change_vote_by_id(["answer", id, change, "id"])
     return redirect(url_for("display_question", id=question_id))
+
 
 @app.route('/question/pics/<link>')
 def giv_pics_to_question(link):

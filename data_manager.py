@@ -28,6 +28,7 @@ def get_answers_by_question_id(cursor, id):
             SELECT message, vote_number, id
             FROM answer
             WHERE question_id = %(q)s
+            ORDER BY submission_time
             '''
     cursor.execute(query, {'q': id})
     return cursor.fetchall()
@@ -114,13 +115,14 @@ def delete_comment_by_answer_id(cursor, id):
     cursor.execute(query, {'q_id': id})
 
 
-def delete_answer_by_id(cursor, id):
+@connection.connection_handler
+def delete_answer_by_id(cursor, answer_id):
     query = """
            DELETE
            FROM answer
            WHERE id = %(q_id)s
            RETURNING question_id"""
-    cursor.execute(query, {'q_id': id})
+    cursor.execute(query, {'q_id': answer_id})
     return cursor.fetchone()
 
 
@@ -130,9 +132,9 @@ def change_vote_by_id(cursor, data):
         query = f"""
                 UPDATE { data[0] }
                 SET vote_number=vote_number+%(c_h)s
-                WHERE {data[3]}=%(q_id)s;
+                WHERE {data[3]}=%(q_or_a_id)s;
                 """
-    cursor.execute(query, {'q_id': data[1], 'c_h': data[2]})
+    cursor.execute(query, {'q_or_a_id': data[1], 'c_h': data[2]})
 
 
 @connection.connection_handler
@@ -155,6 +157,28 @@ def edit_question(cursor, id, question_title, question_message):
     """
     cursor.execute(query, {'q_id': id, 'q_t': question_title, 'q_m': question_message})
 
+
+@connection.connection_handler
+def edit_answer(cursor, id, answer_message):
+    query = """
+        UPDATE answer
+        SET message = %(a_m)s
+        WHERE id = %(a_id)s
+        RETURNING question_id
+        """
+    cursor.execute(query, {'a_id': id, 'a_m': answer_message})
+    return cursor.fetchone()
+
+
+@connection.connection_handler
+def get_answer_by_id(cursor, id):
+    query = '''
+        SELECT *
+        FROM answer
+        WHERE id = %(q)s
+        '''
+    cursor.execute(query, {'q': id})
+    return cursor.fetchall()
 
 @connection.connection_handler
 def get_latest_questions(cursor):
