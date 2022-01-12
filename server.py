@@ -59,7 +59,7 @@ def add_question():
         return redirect('/list')
 
     question = {'title': '', 'message': ''}
-    return render_template("ask_mate_1/form.html", visible_data=question, route="/add-question", is_question=True)
+    return render_template("form.html", visible_data=question, route="/add-question", is_question=True)
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
@@ -78,7 +78,7 @@ def add_answer(question_id):
         data_manager.add_new_answer(new_answer)
         return redirect(f"/question/{question_id}")
     question = {'title': '', 'message': ''}
-    return render_template("ask_mate_1/form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False)
+    return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False)
 
 
 @app.route('/question/<id>/delete', methods=["GET"])
