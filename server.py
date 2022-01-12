@@ -83,6 +83,7 @@ def add_answer(question_id):
 
 @app.route('/question/<id>/delete', methods=["GET"])
 def delete_question(id):
+    data_manager.delete_comment_by_answer_id(id)
     data_manager.delete_comment_by_question_id(id)
     data_manager.delete_answer_by_question_id(id)
     data_manager.delete_question_by_id(id)
