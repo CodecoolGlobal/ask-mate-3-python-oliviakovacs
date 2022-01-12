@@ -28,6 +28,7 @@ def get_answers_by_question_id(cursor, id):
             SELECT message, vote_number, id
             FROM answer
             WHERE question_id = %(q)s
+            ORDER BY submission_time
             '''
     cursor.execute(query, {'q': id})
     return cursor.fetchall()
@@ -130,9 +131,9 @@ def change_vote_by_id(cursor, data):
         query = f"""
                 UPDATE { data[0] }
                 SET vote_number=vote_number+%(c_h)s
-                WHERE {data[3]}=%(q_id)s;
+                WHERE {data[3]}=%(q_or_a_id)s;
                 """
-    cursor.execute(query, {'q_id': data[1], 'c_h': data[2]})
+    cursor.execute(query, {'q_or_a_id': data[1], 'c_h': data[2]})
 
 
 @connection.connection_handler
