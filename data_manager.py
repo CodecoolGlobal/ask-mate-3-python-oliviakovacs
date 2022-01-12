@@ -35,6 +35,27 @@ def get_answers_by_question_id(cursor, id):
 
 
 @connection.connection_handler
+def get_question_comment_by_question_id(cursor, id):
+    query = '''
+            SELECT id, message, submission_time
+            FROM comment
+            WHERE question_id = %(q)s
+            '''
+    cursor.execute(query, {'q': id})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_answer_comment_by_question_id(cursor, id):
+    query = '''
+        SELECT answer_id,message ,submission_time
+        FROM comment c
+        WHERE c.answer_id = (SELECT a.id FROM answer a WHERE a.id = %(q_id)s)'''
+    cursor.execute(query, {'q_id': id})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
 def get_question_headers(cursor):
     cursor.execute("Select * FROM question LIMIT 0")
     colnames = [desc[0] for desc in cursor.description]

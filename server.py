@@ -42,7 +42,9 @@ def list_page():
 def display_question(id):
     question = data_manager.get_question_by_id(id)
     answers = data_manager.get_answers_by_question_id(id)
-    return render_template("question_by_id.html", question=question, answers=answers, id=id)
+    question_comments = data_manager.get_question_comment_by_question_id(id)
+    answers_comments = data_manager.get_answer_comment_by_question_id(id)
+    return render_template("question_by_id.html", question=question, answers=answers, cquestion_comments=question_comments, answers_comments=answers_comments, id=id)
 
 
 @app.route("/add-question", methods=["POST", "GET"])
