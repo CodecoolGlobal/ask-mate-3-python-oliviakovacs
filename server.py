@@ -59,7 +59,7 @@ def add_question():
         return redirect('/list')
 
     question = {'title': '', 'message': ''}
-    return render_template("form.html", visible_data=question, route="/add-question", is_question=True)
+    return render_template("ask_mate_1/form.html", visible_data=question, route="/add-question", is_question=True)
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
@@ -78,7 +78,7 @@ def add_answer(question_id):
         data_manager.add_new_answer(new_answer)
         return redirect(f"/question/{question_id}")
     question = {'title': '', 'message': ''}
-    return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False )
+    return render_template("ask_mate_1/form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False)
 
 
 @app.route('/question/<id>/delete', methods=["GET"])
@@ -107,7 +107,7 @@ def edit_question(question_id):
             connection.write_data(connection.DATA_FILE_PATH_QUESTION, new_data, header)
             return redirect(url_for("display_question", id=question_id))
     question = data_manager.get_question_by_id(question_id, "question")
-    return render_template("form.html", visible_data=question, route=url_for('edit_question', question_id=question_id), is_question=True)
+    return render_template("ask_mate_1/form.html", visible_data=question, route=url_for('edit_question', question_id=question_id), is_question=True)
 
 
 @app.route('/answer/<answer_id>/delete', methods=["POST", "GET"])
@@ -149,7 +149,7 @@ def giv_pics_to_question(link):
     question_with_pics = data_manager.give_pics(link, data)
     connection.write_data(connection.DATA_FILE_PATH_QUESTION, question_with_pics, header)
     default_sort_data = data_manager.sort(data)
-    return render_template('list.html', questions=default_sort_data)
+    return render_template('ask_mate_1/list.html', questions=default_sort_data)
 
 
 @app.route('/answer/pics/<link>')
@@ -159,7 +159,7 @@ def giv_pics_to_answer(link):
     answer_with_pics = data_manager.give_pics(link, data)
     connection.write_data(connection.DATA_FILE_PATH_QUESTION, answer_with_pics, header)
     default_sort_data = data_manager.sort(data)
-    return render_template('list.html', questions=default_sort_data)
+    return render_template('ask_mate_1/list.html', questions=default_sort_data)
 
 
 if __name__ == "__main__":
