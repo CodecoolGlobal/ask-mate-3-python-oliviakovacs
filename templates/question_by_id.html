@@ -6,8 +6,12 @@
     <div>
         {%  for data in question %}
         <h2> {{ data.title }} </h2>
-            <div> <a href="/question/{{ data.id }}/new-answer">Add New Answer</a></div>
         <h3> {{ data.message }} </h3>
+            <p>
+        <span>Like Question :</span> <span> {{ question.vote_number }}</span>
+        <a href="/question/{{ id }}/vote_up">↑</a>
+        <a href="/question/{{ id }}/vote_down">↓</a>
+    </p>
         <form action="/question/{{ data.id }}/delete">
             <input type="submit" value="Delete Question" /><br><br>
         </form>
@@ -23,4 +27,5 @@
             {% endfor %}
     </table>
     </div>
+    <div> <a href="/question/{{ id }}/new-answer">Add New Answer</a></div>
 {% endblock %}

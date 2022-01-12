@@ -112,3 +112,15 @@ def delete_comment_by_answer_id(cursor, id):
        FROM comment c 
        WHERE c.answer_id = (SELECT a.id FROM answer a WHERE a.id = %(q_id)s)"""
     cursor.execute(query, {'q_id': id})
+
+
+@connection.connection_handler
+def change_vote_by_id(cursor, data):
+    if data[2]:
+        query = f"""
+                UPDATE { data[0] }
+                SET vote_number=vote_number+%(c_h)s
+                WHERE {data[3]}=%(q_id)s;
+                """
+    cursor.execute(query, {'q_id': data[1], 'c_h': data[2]})
+

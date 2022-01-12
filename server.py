@@ -37,7 +37,7 @@ def main_page():
 def display_question(id):
     question = data_manager.get_question_by_id(id)
     answers = data_manager.get_answers_by_question_id(id)
-    return render_template("question_by_id.html", question=question, answers=answers)
+    return render_template("question_by_id.html", question=question, answers=answers, id=id)
 
 
 @app.route("/add-question", methods=["POST", "GET"])
@@ -119,13 +119,15 @@ def delete_answer(answer_id):
 
 @app.route('/question/<question_id>/vote_up')
 def vote_up_question(question_id):
-    data_manager.change_vote_by_id(question_id, "question", "increase")
+    change = 1
+    data_manager.change_vote_by_id(["question", question_id,  change, "id"])
     return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/question/<question_id>/vote_down')
 def vote_down_question(question_id):
-    data_manager.change_vote_by_id(question_id, "question", "decrease")
+    change = -1
+    data_manager.change_vote_by_id(["question", question_id,  change, "id"])
     return redirect(url_for("display_question", id=question_id))
 
 
