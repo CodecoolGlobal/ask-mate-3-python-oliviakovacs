@@ -115,13 +115,14 @@ def delete_comment_by_answer_id(cursor, id):
     cursor.execute(query, {'q_id': id})
 
 
-def delete_answer_by_id(cursor, id):
+@connection.connection_handler
+def delete_answer_by_id(cursor, answer_id):
     query = """
            DELETE
            FROM answer
            WHERE id = %(q_id)s
            RETURNING question_id"""
-    cursor.execute(query, {'q_id': id})
+    cursor.execute(query, {'q_id': answer_id})
     return cursor.fetchone()
 
 
