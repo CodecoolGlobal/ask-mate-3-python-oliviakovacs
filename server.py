@@ -118,20 +118,23 @@ def vote_up_question(question_id):
 def vote_down_question(question_id):
     change = -1
     data_manager.change_vote_by_id(["question", question_id,  change, "id"])
+    data_manager.se
     return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/answer/<id>/vote_up')
 def vote_up_answer(id):
-    old_data = data_manager.change_vote_by_id(id, "answer", "increase")
-    question_id = data_manager.which_question(old_data, id)
+    change = 1
+    data_manager.change_vote_by_id(["answer", id, change, "id"])
+    question_id = data_manager.get_question_id_by_answer(id)
     return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/answer/<id>/vote_down')
 def vote_down_answer(id):
-    old_data = data_manager.change_vote_by_id(id, "answer", "decrease")
-    question_id = data_manager.which_question(old_data, id)
+    change = -1
+    data_manager.change_vote_by_id(["answer", id, change, "id"])
+    question_id = data_manager.get_question_id_by_answer(id)
     return redirect(url_for("display_question", id=question_id))
 
 @app.route('/question/pics/<link>')

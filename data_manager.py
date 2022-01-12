@@ -133,3 +133,13 @@ def change_vote_by_id(cursor, data):
                 WHERE {data[3]}=%(q_id)s;
                 """
     cursor.execute(query, {'q_id': data[1], 'c_h': data[2]})
+
+@connection.connection_handler
+def get_question_id_by_answer(cursor, id):
+    query= '''
+        SELECT question_id
+        FROM answer
+        WHERE id=%(id)s;
+         '''
+    cursor.execute(query, {'id': id})
+    return cursor.fetchone()
