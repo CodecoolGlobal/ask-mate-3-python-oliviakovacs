@@ -133,3 +133,14 @@ def change_vote_by_id(cursor, data):
                 WHERE {data[3]}=%(q_id)s;
                 """
     cursor.execute(query, {'q_id': data[1], 'c_h': data[2]})
+
+
+@connection.connection_handler
+def edit_question(cursor, id, question_title, question_message):
+    query = """
+    UPDATE question
+    SET title = %(q_t)s, message = %(q_m)s
+    WHERE id = %(q_id)s
+    """
+    cursor.execute(query, {'q_id': id, 'q_t': question_title, 'q_m': question_message})
+
