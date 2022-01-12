@@ -8,36 +8,5 @@
             <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
     {% endfor %}
     </ol>
-    <div>
-        <form action="/list">
-            <label for="sort-input">Sort by:</label>
-            <select id="sort-input" name="order-by">
-                {% for header in headers %}
-                    <option value="{{ header }}">{{ header }}</option>
-                {% endfor %}
-            </select>
-            <label for="direction-input">Direction:</label>
-            <select id="direction-input" name="direction">
-                <option value="ASC">Ascending</option>
-                <option value="DESC">Descending</option>
-            </select>
-            <button type="submit">Order</button>
-        </form>
-    </div>
-
-    <div>
-        <ol>
-            {% for question in questions %}
-                <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
-                <div>
-                {% if question.image %}
-                <img src="/static/{{ question.image }}">
-                {% endif %}
-                </div>
-            {% endfor %}
-        </ol>
-    </div>
-    <div> <a href="/add-question">Add New Question</a>
-    </div>
     <a href="/list">See all questions</a>
 {% endblock %}
