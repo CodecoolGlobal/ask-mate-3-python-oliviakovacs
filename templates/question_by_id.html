@@ -30,6 +30,9 @@
                 </tr>
                 <tr>
                     <td>
+                        <form action="/answer/{{ answer.id }}/edit">
+                            <input type="submit" value="Edit Answer" />
+                        </form>
                         <form action="/answer/{{ answer.id }}/delete">
                             <input type="submit" value="Delete Answer" />
                         </form>

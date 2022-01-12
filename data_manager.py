@@ -156,3 +156,25 @@ def edit_question(cursor, id, question_title, question_message):
     cursor.execute(query, {'q_id': id, 'q_t': question_title, 'q_m': question_message})
 
 
+@connection.connection_handler
+def edit_answer(cursor, id, answer_message):
+    query = """
+        UPDATE answer
+        SET message = %(a_m)s
+        WHERE id = %(a_id)s
+        RETURNING question_id
+        """
+    cursor.execute(query, {'a_id': id, 'a_m': answer_message})
+    return cursor.fetchone()
+
+
+@connection.connection_handler
+def get_answer_by_id(cursor, id):
+    query = '''
+        SELECT *
+        FROM answer
+        WHERE id = %(q)s
+        '''
+    cursor.execute(query, {'q': id})
+    return cursor.fetchall()
+
