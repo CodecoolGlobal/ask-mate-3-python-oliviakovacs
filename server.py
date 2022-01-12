@@ -52,10 +52,8 @@ def add_question():
         new_question.append(0)
         new_question.append(request.form.get("title"))
         new_question.append(request.form.get("message"))
-        #new_question.append(request.form.get(pics))
+        new_question.append(request.form.get("image"))
         data_manager.add_new_question(new_question)
-        # Ide kell majd a Pics!!!
-
         return redirect('/list')
 
     question = {'title': '', 'message': ''}
@@ -74,7 +72,7 @@ def add_answer(question_id):
         new_answer.append(0)
         new_answer.append(question_id)
         new_answer.append(request.form.get("message"))
-        #new_question.append(pic)
+        new_answer.append(request.form.get("image"))
         data_manager.add_new_answer(new_answer)
         return redirect(f"/question/{question_id}")
     question = {'title': '', 'message': ''}
@@ -93,9 +91,10 @@ def delete_question(id):
 @app.route('/question/<question_id>/edit', methods=["POST", "GET"])
 def edit_question(question_id):
     if request.method == "POST":
+        pic = request.form["edit_question_pic"]
         question = request.form["question_title"]
         message = request.form["question_message"]
-        data_manager.edit_question(question_id, question, message)
+        data_manager.edit_question(question_id, question, message, pic)
         return redirect(url_for("display_question", id=question_id))
     question = data_manager.get_question_by_id(question_id)
     return render_template("edit_question.html", question=question, q_id=question_id)
@@ -105,7 +104,8 @@ def edit_question(question_id):
 def edit_answer(answer_id):
     if request.method == "POST":
         message = request.form["answer_message"]
-        answer = data_manager.edit_answer(answer_id, message)
+        pic = request.form["edit_image"]
+        answer = data_manager.edit_answer(answer_id, message, pic)
         question_id = answer['question_id']
         print(question_id)
         return redirect(url_for("display_question", id=question_id))

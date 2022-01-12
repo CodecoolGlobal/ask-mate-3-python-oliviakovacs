@@ -30,6 +30,9 @@
                 </tr>
                 <tr>
                     <td>
+                        {% if answer.image %}
+                        <img src="/static/{{ answer.image }}">
+                        {% endif %}
                         <form action="/answer/{{ answer.id }}/edit">
                             <input type="submit" value="Edit Answer" />
                         </form>
