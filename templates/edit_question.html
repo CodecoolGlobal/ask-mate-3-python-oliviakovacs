@@ -13,6 +13,8 @@
                 <textarea id="question_title" name="question_title" rows="4" cols="50">{{ data.title }} </textarea><br>
                 <label for="question_message">Description</label><br>
                 <textarea id="question_message" name="question_message" rows="4" cols="50">{{ data.message }} </textarea><br>
+                <label for="edit_question_pic">Add Pics:</label><br>
+                <input type="text" id="edit_question_pic" name="edit_question_pic" maxlength="150"><br><br>>
             {% endfor %}
             <button type="submit"> Save </button>
         </form>

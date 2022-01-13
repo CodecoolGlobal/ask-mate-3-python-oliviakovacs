@@ -26,6 +26,11 @@
         <ol>
             {% for question in questions %}
                 <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
+                 <div>
+                {% if question.image %}
+                <img src="/static/{{ question.image }}">
+                {% endif %}
+                </div>
             {% endfor %}
         </ol>
     </div>

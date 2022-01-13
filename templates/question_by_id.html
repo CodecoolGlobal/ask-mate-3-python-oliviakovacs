@@ -9,13 +9,28 @@
             <div> <a href="/question/{{ data.id }}/edit">Edit question</a></div>
         <h3> {{ data.message }} </h3>
             <p>
-        <span>Like Question :</span> <span> {{ question.vote_number }}</span>
-        <a href="/question/{{ id }}/vote_up">↑</a>
-        <a href="/question/{{ id }}/vote_down">↓</a>
-    </p>
+                <span>Like Question :</span> <span> {{ question.vote_number }}</span>
+                <a href="/question/{{ id }}/vote_up">↑</a>
+                <a href="/question/{{ id }}/vote_down">↓</a>
+            </p>
         <form action="/question/{{ data.id }}/delete">
             <input type="submit" value="Delete Question" /><br><br>
         </form>
+        <div><a href="/question/{{ id }}/new-comment">Add New Comment</a></div>
+            <table>
+                {% for q_comment in question_comments %}
+                <tr>
+                    <td>{{ q_comment.message }}</td>
+                    <td>{{ q_comment.submission_time }}</td>
+                    <td>
+                        <form action="/comment/{{ data.id }}/{{ q_comment.id }}/delete">
+                            <input type="submit" value="Delete Comment" /><br><br>
+                        </form>
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </table>
         <p> Views: {{ data.view_number }}  Votes: {{ data.vote_number }} </p>
         {% endfor %}
     </div>
@@ -28,14 +43,40 @@
                     <td>{{ answer.message }}</td>
                     <td>{{ answer.vote_number }} <a href="/answer/{{ answer.id }}/vote_up">↑</a> <a href="/answer/{{ answer.id }}/vote_down">↓</a></td>
                 </tr>
+                {% for a_comment in answers_comments %}
+                    {% if answer.id == a_comment.answer_id %}
+                <tr>
+                    <td>{{ a_comment.message }}</td>
+                    <td>{{ a_comment.submission_time }}</td>
+                    <td>
+                        <form action="/comment/{{ answer.question_id }}/{{ a_comment.id }}/delete">
+                            <input type="submit" value="Delete Comment" /><br><br>
+                        </form>
+                    </td>
+                </tr>
+
+                    {% endif %}
+                {% endfor %}
                 <tr>
                     <td>
+                        {% if answer.image %}
+                        <img src="/static/{{ answer.image }}">
+                        {% endif %}
                         <form action="/answer/{{ answer.id }}/edit">
                             <input type="submit" value="Edit Answer" />
                         </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <form action="/answer/{{ answer.id }}/delete">
                             <input type="submit" value="Delete Answer" />
                         </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div><a href="/answer/{{ answer.id }}/new-comment">Add New Comment</a></div>
                     </td>
                 </tr>
 

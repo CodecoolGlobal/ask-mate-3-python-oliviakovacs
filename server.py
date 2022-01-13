@@ -43,7 +43,9 @@ def display_search_result():
 def display_question(id):
     question = data_manager.get_question_by_id(id)
     answers = data_manager.get_answers_by_question_id(id)
-    return render_template("question_by_id.html", question=question, answers=answers, id=id)
+    question_comments = data_manager.get_question_comment_by_question_id(id)
+    answers_comments = data_manager.get_answer_comment_by_question_id(id)
+    return render_template("question_by_id.html", question=question, answers=answers, question_comments=question_comments, answers_comments=answers_comments, id=id)
 
 
 @app.route("/add-question", methods=["POST", "GET"])
@@ -58,10 +60,8 @@ def add_question():
         new_question.append(0)
         new_question.append(request.form.get("title"))
         new_question.append(request.form.get("message"))
-        #new_question.append(request.form.get(pics))
+        new_question.append(request.form.get("image"))
         data_manager.add_new_question(new_question)
-        # Ide kell majd a Pics!!!
-
         return redirect('/list')
 
     question = {'title': '', 'message': ''}
@@ -80,11 +80,42 @@ def add_answer(question_id):
         new_answer.append(0)
         new_answer.append(question_id)
         new_answer.append(request.form.get("message"))
-        #new_question.append(pic)
+        new_answer.append(request.form.get("image"))
         data_manager.add_new_answer(new_answer)
         return redirect(f"/question/{question_id}")
     question = {'title': '', 'message': ''}
     return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False)
+
+
+@app.route('/question/<question_id>/new-comment', methods=["POST", "GET"])
+def add_comment_to_question(question_id):
+    if request.method == "POST":
+        now = datetime.datetime.now()
+        new_comment = []
+        new_comment.append(now)
+        new_comment.append(question_id)
+        new_comment.append(request.form.get("message"))
+        data_manager.add_new_comment_to_question(new_comment)
+        return redirect(url_for("display_question", id=question_id))
+    comment = {'title': '', 'message': ''}
+    return render_template("form.html", visible_data=comment, route=f"/question/{question_id}/new-comment")
+
+
+@app.route('/answer/<answer_id>/new-comment', methods=["POST", "GET"])
+def add_comment_to_answer(answer_id):
+    if request.method == "POST":
+        question_id = data_manager.get_question_id_by_answer(answer_id)
+        question_id = question_id['question_id']
+        now = datetime.datetime.now()
+        new_comment = []
+        new_comment.append(now)
+        new_comment.append(answer_id)
+        new_comment.append(request.form.get("message"))
+        data_manager.add_new_comment_to_answer(new_comment)
+        return redirect(url_for("display_question", id=question_id))
+    comment = {'title': '', 'message': ''}
+    return render_template("form.html", visible_data=comment, route=f"/answer/{answer_id}/new-comment")
+
 
 
 @app.route('/question/<id>/delete', methods=["GET"])
@@ -99,9 +130,10 @@ def delete_question(id):
 @app.route('/question/<question_id>/edit', methods=["POST", "GET"])
 def edit_question(question_id):
     if request.method == "POST":
+        pic = request.form["edit_question_pic"]
         question = request.form["question_title"]
         message = request.form["question_message"]
-        data_manager.edit_question(question_id, question, message)
+        data_manager.edit_question(question_id, question, message, pic)
         return redirect(url_for("display_question", id=question_id))
     question = data_manager.get_question_by_id(question_id)
     return render_template("edit_question.html", question=question, q_id=question_id)
@@ -111,8 +143,9 @@ def edit_question(question_id):
 def edit_answer(answer_id):
     if request.method == "POST":
         message = request.form["answer_message"]
-        answer = data_manager.edit_answer(answer_id, message)
-        question_id = answer['question_id']
+        pic = request.form["edit_image"]
+        answer = data_manager.edit_answer(answer_id, message, pic)
+        question_id = answerc
         print(question_id)
         return redirect(url_for("display_question", id=question_id))
     answer = data_manager.get_answer_by_id(answer_id)
@@ -124,6 +157,12 @@ def delete_answer(answer_id):
     data_manager.delete_comment_by_answer_id(answer_id)
     return_question_id = data_manager.delete_answer_by_id(answer_id)
     return redirect("/question/" + str(return_question_id['question_id']))
+
+
+@app.route('/comment/<id>/<comment_id>/delete', methods=["POST", "GET"])
+def delete_comment(id, comment_id):
+    data_manager.delete_comment_by_id(comment_id)
+    return redirect(url_for("display_question", id=id))
 
 
 @app.route('/question/<question_id>/vote_up')
