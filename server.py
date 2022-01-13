@@ -36,7 +36,8 @@ def display_search_result():
     search = main_page()
     questions_n_answers = data_manager.get_content_by_search(search)
     if questions_n_answers:
-        return render_template("search.html", questions_n_answers=questions_n_answers)
+        highlight = f"<mark> {search} </mark>"
+        return render_template("search.html", questions_n_answers=questions_n_answers, keyword=search, highlight=highlight)
     else:
         return render_template("error.html")
 
