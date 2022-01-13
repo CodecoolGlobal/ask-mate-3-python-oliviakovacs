@@ -101,6 +101,23 @@ def add_new_answer(cursor, new_question_data):
 
 
 @connection.connection_handler
+def add_new_comment_to_question(cursor, new_comment_data):
+    query = """
+    INSERT INTO comment (submission_time, question_id, message)
+    VALUES (%(s_t)s, %(q_id)s, %(m_a)s)
+    """
+    cursor.execute(query, {'s_t': new_comment_data[0], 'q_id': new_comment_data[1], 'm_a': new_comment_data[2]})
+
+
+@connection.connection_handler
+def add_new_comment_to_answer(cursor, new_comment_data):
+    query = """
+    INSERT INTO comment (submission_time, answer_id, message)
+    VALUES (%(s_t)s, %(a_id)s, %(m_a)s)
+    """
+    cursor.execute(query, {'s_t': new_comment_data[0], 'a_id': new_comment_data[1], 'm_a': new_comment_data[2]})
+
+@connection.connection_handler
 def delete_question_by_id(cursor, id):
     query = """
     DELETE

@@ -33,7 +33,7 @@ def display_question(id):
     answers = data_manager.get_answers_by_question_id(id)
     question_comments = data_manager.get_question_comment_by_question_id(id)
     answers_comments = data_manager.get_answer_comment_by_question_id(id)
-    return render_template("question_by_id.html", question=question, answers=answers, cquestion_comments=question_comments, answers_comments=answers_comments, id=id)
+    return render_template("question_by_id.html", question=question, answers=answers, question_comments=question_comments, answers_comments=answers_comments, id=id)
 
 
 @app.route("/add-question", methods=["POST", "GET"])
@@ -76,11 +76,34 @@ def add_answer(question_id):
 
 
 @app.route('/question/<question_id>/new-comment', methods=["POST", "GET"])
-def add_comment(question_id):
+def add_comment_to_question(question_id):
     if request.method == "POST":
-        pass
+        now = datetime.datetime.now()
+        new_comment = []
+        new_comment.append(now)
+        new_comment.append(question_id)
+        new_comment.append(request.form.get("message"))
+        data_manager.add_new_comment_to_question(new_comment)
+        return redirect(url_for("display_question", id=question_id))
     comment = {'title': '', 'message': ''}
     return render_template("form.html", visible_data=comment, route=f"/question/{question_id}/new-comment")
+
+
+@app.route('/answer/<answer_id>/new-comment', methods=["POST", "GET"])
+def add_comment_to_answer(answer_id):
+    if request.method == "POST":
+        question_id = data_manager.get_question_id_by_answer(answer_id)
+        question_id = question_id['question_id']
+        now = datetime.datetime.now()
+        new_comment = []
+        new_comment.append(now)
+        new_comment.append(answer_id)
+        new_comment.append(request.form.get("message"))
+        data_manager.add_new_comment_to_answer(new_comment)
+        return redirect(url_for("display_question", id=question_id))
+    comment = {'title': '', 'message': ''}
+    return render_template("form.html", visible_data=comment, route=f"/answer/{answer_id}/new-comment")
+
 
 
 @app.route('/question/<id>/delete', methods=["GET"])

@@ -17,9 +17,6 @@
             <input type="submit" value="Delete Question" /><br><br>
         </form>
         <div><a href="/question/{{ id }}/new-comment">Add New Comment</a></div>
-        <form action="/question/{{ data.id }}/new-comment">
-            <input type="submit" value="Add Comment" /><br><br>
-        </form>
             <table>
                 {% for q_comment in question_comments %}
                 <tr>
@@ -77,9 +74,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <form action="/answer/{{ answer.id }}/new-comment">
-                            <input type="submit" value="Add Comment" />
-                        </form>
+                        <div><a href="/answer/{{ id }}/new-comment">Add New Comment</a></div>
                     </td>
                 </tr>
 
