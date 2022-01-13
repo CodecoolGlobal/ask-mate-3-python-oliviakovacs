@@ -48,7 +48,7 @@ def get_question_comment_by_question_id(cursor, id):
 @connection.connection_handler
 def get_answer_comment_by_question_id(cursor, id):
     query = '''
-        SELECT answer_id,message ,submission_time
+        SELECT *
         FROM comment c
         WHERE c.answer_id = (SELECT a.id FROM answer a WHERE a.id = %(q_id)s)'''
     cursor.execute(query, {'q_id': id})
@@ -156,12 +156,21 @@ def delete_comment_by_answer_id(cursor, id):
 @connection.connection_handler
 def delete_answer_by_id(cursor, answer_id):
     query = """
-           DELETE
-           FROM answer
-           WHERE id = %(q_id)s
-           RETURNING question_id"""
+       DELETE
+       FROM answer
+       WHERE id = %(q_id)s
+       RETURNING question_id"""
     cursor.execute(query, {'q_id': answer_id})
     return cursor.fetchone()
+
+
+@connection.connection_handler
+def delete_comment_by_id(cursor, comment_id):
+    query = """
+        DELETE
+        FROM comment
+        WHERE id = %(c_id)s"""
+    cursor.execute(query, {'c_id': comment_id})
 
 
 @connection.connection_handler

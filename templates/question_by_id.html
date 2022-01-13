@@ -22,15 +22,12 @@
                 <tr>
                     <td>{{ q_comment.message }}</td>
                     <td>{{ q_comment.submission_time }}</td>
-                </tr>
-                <tr>
                     <td>
-                        <form action="/question/{{ data.id }}/new-comment">
+                        <form action="/comment/{{ data.id }}/{{ q_comment.id }}/delete">
                             <input type="submit" value="Delete Comment" /><br><br>
                         </form>
                     </td>
                 </tr>
-
 
                 {% endfor %}
             </table>
@@ -51,6 +48,11 @@
                 <tr>
                     <td>{{ a_comment.message }}</td>
                     <td>{{ a_comment.submission_time }}</td>
+                    <td>
+                        <form action="/comment/{{ answer.question_id }}/{{ a_comment.id }}/delete">
+                            <input type="submit" value="Delete Comment" /><br><br>
+                        </form>
+                    </td>
                 </tr>
 
                     {% endif %}

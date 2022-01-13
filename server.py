@@ -133,7 +133,7 @@ def edit_answer(answer_id):
         message = request.form["answer_message"]
         pic = request.form["edit_image"]
         answer = data_manager.edit_answer(answer_id, message, pic)
-        question_id = answer['question_id']
+        question_id = answerc
         print(question_id)
         return redirect(url_for("display_question", id=question_id))
     answer = data_manager.get_answer_by_id(answer_id)
@@ -145,6 +145,12 @@ def delete_answer(answer_id):
     data_manager.delete_comment_by_answer_id(answer_id)
     return_question_id = data_manager.delete_answer_by_id(answer_id)
     return redirect("/question/" + str(return_question_id['question_id']))
+
+
+@app.route('/comment/<id>/<comment_id>/delete', methods=["POST", "GET"])
+def delete_comment(id, comment_id):
+    data_manager.delete_comment_by_id(comment_id)
+    return redirect(url_for("display_question", id=id))
 
 
 @app.route('/question/<question_id>/vote_up')
