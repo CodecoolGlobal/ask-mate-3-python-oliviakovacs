@@ -19,9 +19,12 @@
         <div><a href="/question/{{ id }}/new-comment">Add New Comment</a></div>
             <table>
                 {% for q_comment in question_comments %}
-                <tr>
+                <td>
                     <td>{{ q_comment.message }}</td>
                     <td>{{ q_comment.submission_time }}</td>
+                    <td>Edited {{ q_comment.edited_count }} times.</td>
+                    <td><form action="/comment/{{q_comment.id}}/edit">
+                        <input type="submit" value="Edit Comment"><br><br></form></td>
                     <td>
                         <form action="/comment/{{ data.id }}/{{ q_comment.id }}/delete">
                             <input type="submit" value="Delete Comment" /><br><br>
@@ -48,6 +51,9 @@
                 <tr>
                     <td>{{ a_comment.message }}</td>
                     <td>{{ a_comment.submission_time }}</td>
+                    <td>Edited {{ a_comment.edited_count }} times.</td>
+                    <td><form action="/comment/{{a_comment.id}}/edit">
+                        <input type="submit" value="Edit Comment"><br><br></form></td>
                     <td>
                         <form action="/comment/{{ answer.question_id }}/{{ a_comment.id }}/delete">
                             <input type="submit" value="Delete Comment" /><br><br>

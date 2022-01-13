@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import data_manager
 import connection
 import datetime
+from markupsafe import Markup
 
 
 
@@ -34,9 +35,7 @@ def list_page():
 def display_search_result():
     search = main_page()
     questions_n_answers = data_manager.get_content_by_search(search)
-    print(questions_n_answers)
-    is_duplicate = ""
-    return render_template("search.html", questions_n_answers=questions_n_answers, is_duplicate=is_duplicate)
+    return render_template("search.html", questions_n_answers=questions_n_answers)
 
 
 @app.route("/question/<id>")
@@ -145,8 +144,7 @@ def edit_answer(answer_id):
         message = request.form["answer_message"]
         pic = request.form["edit_image"]
         answer = data_manager.edit_answer(answer_id, message, pic)
-        question_id = answerc
-        print(question_id)
+        question_id = answer['question_id']
         return redirect(url_for("display_question", id=question_id))
     answer = data_manager.get_answer_by_id(answer_id)
     return render_template("edit_answer.html", answer=answer, a_id=answer_id)
@@ -215,6 +213,19 @@ def giv_pics_to_answer(link):
     connection.write_data(connection.DATA_FILE_PATH_QUESTION, answer_with_pics, header)
     default_sort_data = data_manager.sort(data)
     return render_template('ask_mate_1/list.html', questions=default_sort_data)
+
+
+@app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
+def edit_comment(comment_id):
+    if request.method == "POST":
+        now = datetime.datetime.now()
+        message = request.form["comment_message"]
+        comment = data_manager.edit_comment(comment_id, message, now)
+        question_id = comment['question_id']
+        return redirect(url_for("display_question", id=question_id))
+    comment = data_manager.get_comment_by_id(comment_id)
+    return render_template("edit_comment.html", comment=comment, c_id=comment_id)
+
 
 
 if __name__ == "__main__":

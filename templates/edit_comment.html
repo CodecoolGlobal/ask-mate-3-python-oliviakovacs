@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+     Edit comment
+{% endblock %}
+
+{% block body %}
+    <div id="edit_comment">
+        <form action="/comment/{{c_id}}/edit" method="post">
+
+            {% for data in comment %}
+                <label for="comment_message">Comment</label><br>
+                <textarea id="comment_message" name="comment_message" rows="4" cols="50">{{ data.message }} </textarea><br>
+            {% endfor %}
+            <button type="submit"> Save </button>
+        </form>
+    </div>
+
+{% endblock %}
