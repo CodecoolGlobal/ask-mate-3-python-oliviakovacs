@@ -27,17 +27,6 @@ def list_page():
     return render_template('list.html', questions=data, headers=headers)
 
 
-@app.route("/question/<question_id>/new-comment")
-
-#
-# # @app.route("/question")
-# @app.route("/question/<id>")
-# def display_question(id):
-#     question = data_manager.get_question_by_id(id, "question")
-#     answers = data_manager.get_answers_by_question_id(id, 'answer')
-#     return render_template("question.html", question=question, answers=answers)
-
-
 @app.route("/question/<id>")
 def display_question(id):
     question = data_manager.get_question_by_id(id)
@@ -84,6 +73,14 @@ def add_answer(question_id):
         return redirect(f"/question/{question_id}")
     question = {'title': '', 'message': ''}
     return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False)
+
+
+@app.route('/question/<question_id>/new-comment', methods=["POST", "GET"])
+def add_comment(question_id):
+    if request.method == "POST":
+        pass
+    comment = {'title': '', 'message': ''}
+    return render_template("form.html", visible_data=comment, route=f"/question/{question_id}/new-comment")
 
 
 @app.route('/question/<id>/delete', methods=["GET"])

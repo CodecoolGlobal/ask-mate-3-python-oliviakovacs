@@ -16,12 +16,25 @@
         <form action="/question/{{ data.id }}/delete">
             <input type="submit" value="Delete Question" /><br><br>
         </form>
+        <div><a href="/question/{{ id }}/new-comment">Add New Comment</a></div>
+        <form action="/question/{{ data.id }}/new-comment">
+            <input type="submit" value="Add Comment" /><br><br>
+        </form>
             <table>
                 {% for q_comment in question_comments %}
                 <tr>
                     <td>{{ q_comment.message }}</td>
                     <td>{{ q_comment.submission_time }}</td>
                 </tr>
+                <tr>
+                    <td>
+                        <form action="/question/{{ data.id }}/new-comment">
+                            <input type="submit" value="Delete Comment" /><br><br>
+                        </form>
+                    </td>
+                </tr>
+
+
                 {% endfor %}
             </table>
         <p> Views: {{ data.view_number }}  Votes: {{ data.vote_number }} </p>
@@ -42,6 +55,7 @@
                     <td>{{ a_comment.message }}</td>
                     <td>{{ a_comment.submission_time }}</td>
                 </tr>
+
                     {% endif %}
                 {% endfor %}
                 <tr>
@@ -58,6 +72,13 @@
                     <td>
                         <form action="/answer/{{ answer.id }}/delete">
                             <input type="submit" value="Delete Answer" />
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <form action="/answer/{{ answer.id }}/new-comment">
+                            <input type="submit" value="Add Comment" />
                         </form>
                     </td>
                 </tr>
