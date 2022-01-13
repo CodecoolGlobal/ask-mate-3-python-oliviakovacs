@@ -8,10 +8,13 @@ import datetime
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def main_page():
-    questions = data_manager.get_latest_questions()
-    return render_template('main.html', questions=questions)
+    if request.method == 'POST':
+        search = request.form['search']
+        return search
+    all_questions = data_manager.get_latest_questions()
+    return render_template('main.html', questions=all_questions)
 
 
 @app.route("/list", methods=['GET'])
@@ -27,15 +30,13 @@ def list_page():
     return render_template('list.html', questions=data, headers=headers)
 
 
-@app.route("/question/<question_id>/new-comment")
-
-#
-# # @app.route("/question")
-# @app.route("/question/<id>")
-# def display_question(id):
-#     question = data_manager.get_question_by_id(id, "question")
-#     answers = data_manager.get_answers_by_question_id(id, 'answer')
-#     return render_template("question.html", question=question, answers=answers)
+@app.route("/search", methods=['POST'])
+def display_search_result():
+    search = main_page()
+    questions_n_answers = data_manager.get_content_by_search(search)
+    print(questions_n_answers)
+    is_duplicate = ""
+    return render_template("search.html", questions_n_answers=questions_n_answers, is_duplicate=is_duplicate)
 
 
 @app.route("/question/<id>")

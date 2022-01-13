@@ -191,3 +191,16 @@ def get_latest_questions(cursor):
     return cursor.fetchall()
 
 
+@connection.connection_handler
+def get_content_by_search(cursor, search):
+    query = """
+    SELECT title, answer.message, question.id
+    FROM question
+    FULL JOIN answer
+    ON question.id = answer.question_id
+    WHERE answer.message LIKE %(s)s OR question.title LIKE %(s)s
+    ORDER BY question.id
+    """
+    cursor.execute(query, {"s": f"%{search}%"})
+    return cursor.fetchall()
+
