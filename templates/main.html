@@ -8,5 +8,10 @@
             <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
     {% endfor %}
     </ol>
-    <a href="/list">See all questions</a>
+    <form action="/search" method="post">
+        <label for="search">Search</label>
+        <input id="search" name="search" type="text">
+        <button type="submit">Go</button><br>
+        <a href="/list">See all questions</a>
+    </form>
 {% endblock %}

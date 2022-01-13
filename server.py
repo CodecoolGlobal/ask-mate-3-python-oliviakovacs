@@ -8,10 +8,13 @@ import datetime
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def main_page():
-    questions = data_manager.get_latest_questions()
-    return render_template('main.html', questions=questions)
+    if request.method == 'POST':
+        search = request.form['search']
+        return search
+    all_questions = data_manager.get_latest_questions()
+    return render_template('main.html', questions=all_questions)
 
 
 @app.route("/list", methods=['GET'])
@@ -27,15 +30,13 @@ def list_page():
     return render_template('list.html', questions=data, headers=headers)
 
 
-@app.route("/question/<question_id>/new-comment")
-
-#
-# # @app.route("/question")
-# @app.route("/question/<id>")
-# def display_question(id):
-#     question = data_manager.get_question_by_id(id, "question")
-#     answers = data_manager.get_answers_by_question_id(id, 'answer')
-#     return render_template("question.html", question=question, answers=answers)
+@app.route("/search", methods=['POST'])
+def display_search_result():
+    search = main_page()
+    questions_n_answers = data_manager.get_content_by_search(search)
+    print(questions_n_answers)
+    is_duplicate = ""
+    return render_template("search.html", questions_n_answers=questions_n_answers, is_duplicate=is_duplicate)
 
 
 @app.route("/question/<id>")
@@ -87,6 +88,37 @@ def add_answer(question_id):
     return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False)
 
 
+@app.route('/question/<question_id>/new-comment', methods=["POST", "GET"])
+def add_comment_to_question(question_id):
+    if request.method == "POST":
+        now = datetime.datetime.now()
+        new_comment = []
+        new_comment.append(now)
+        new_comment.append(question_id)
+        new_comment.append(request.form.get("message"))
+        data_manager.add_new_comment_to_question(new_comment)
+        return redirect(url_for("display_question", id=question_id))
+    comment = {'title': '', 'message': ''}
+    return render_template("form.html", visible_data=comment, route=f"/question/{question_id}/new-comment")
+
+
+@app.route('/answer/<answer_id>/new-comment', methods=["POST", "GET"])
+def add_comment_to_answer(answer_id):
+    if request.method == "POST":
+        question_id = data_manager.get_question_id_by_answer(answer_id)
+        question_id = question_id['question_id']
+        now = datetime.datetime.now()
+        new_comment = []
+        new_comment.append(now)
+        new_comment.append(answer_id)
+        new_comment.append(request.form.get("message"))
+        data_manager.add_new_comment_to_answer(new_comment)
+        return redirect(url_for("display_question", id=question_id))
+    comment = {'title': '', 'message': ''}
+    return render_template("form.html", visible_data=comment, route=f"/answer/{answer_id}/new-comment")
+
+
+
 @app.route('/question/<id>/delete', methods=["GET"])
 def delete_question(id):
     data_manager.delete_comment_by_answer_id(id)
@@ -114,7 +146,7 @@ def edit_answer(answer_id):
         message = request.form["answer_message"]
         pic = request.form["edit_image"]
         answer = data_manager.edit_answer(answer_id, message, pic)
-        question_id = answer['question_id']
+        question_id = answer
         print(question_id)
         return redirect(url_for("display_question", id=question_id))
     answer = data_manager.get_answer_by_id(answer_id)
@@ -126,6 +158,12 @@ def delete_answer(answer_id):
     data_manager.delete_comment_by_answer_id(answer_id)
     return_question_id = data_manager.delete_answer_by_id(answer_id)
     return redirect("/question/" + str(return_question_id['question_id']))
+
+
+@app.route('/comment/<id>/<comment_id>/delete', methods=["POST", "GET"])
+def delete_comment(id, comment_id):
+    data_manager.delete_comment_by_id(comment_id)
+    return redirect(url_for("display_question", id=id))
 
 
 @app.route('/question/<question_id>/vote_up')

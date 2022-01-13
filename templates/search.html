@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Search{% endblock %}
+
+{% block body %}
+    {% set is_duplicate = namespace(value="") %}
+    <ul>
+    {% for content in questions_n_answers %}
+            <li>{% if content.title != is_duplicate.value %}
+                    {% set is_duplicate.value = content.title %}
+                    <a href="question/{{ content.id }}">{{ content.title }}</a>
+                    {% if content.message %}<ul><li><i>{{ content.message }} </i></li></ul>{% endif %}
+                {% else %}
+                    <ul><li><i>{{ content.message }} </i></li></ul>
+                {% endif %}
+            </li>
+    {% endfor %}
+    </ul>
+
+{% endblock %}
