@@ -44,7 +44,8 @@ def display_question(id):
     answers = data_manager.get_answers_by_question_id(id)
     question_comments = data_manager.get_question_comment_by_question_id(id)
     answers_comments = data_manager.get_answer_comment_by_question_id(id)
-    return render_template("question_by_id.html", question=question, answers=answers, cquestion_comments=question_comments, answers_comments=answers_comments, id=id)
+    tags = data_manager.tags_by_question_id(id)
+    return render_template("question_by_id.html", question=question, answers=answers, cquestion_comments=question_comments, answers_comments=answers_comments, id=id, tags=tags)
 
 
 @app.route("/add-question", methods=["POST", "GET"])
@@ -177,6 +178,42 @@ def giv_pics_to_answer(link):
     connection.write_data(connection.DATA_FILE_PATH_QUESTION, answer_with_pics, header)
     default_sort_data = data_manager.sort(data)
     return render_template('ask_mate_1/list.html', questions=default_sort_data)
+
+
+@app.route('/question/<question_id>/new-tag', methods=["POST", "GET"])
+def give_tag(question_id):
+    if request.method == "POST":
+        tag_name = request.form.get("new_tag")
+        tag_exist= data_manager.select_tag_id_by_tag_name(tag_name)
+        if not tag_exist:
+            tag_id = data_manager.make_new_tag(tag_name)
+            data = [question_id, tag_id['id']]
+            data_manager.pairing_tag_with_question(data)
+            return redirect(url_for("display_question", id=question_id))
+        tag_in_question = data_manager.tag_in_question_or_not(tag_exist["id"], question_id)
+        if not tag_in_question:
+            data = [question_id, tag_exist["id"]]
+            data_manager.pairing_tag_with_question(data)
+        return redirect(url_for("display_question", id=question_id))
+    else:
+        tags_for_listing = data_manager.all_tag()
+        return render_template("adding_tag.html", question_id=question_id, tags=tags_for_listing)
+
+@app.route('/question/<question_id>/select-tag')
+def give_tag_with_select(question_id):
+    tag_name=request.args['tag_name']
+    tag_id = data_manager.select_tag_id_by_tag_name(tag_name)
+    exist_in_question = data_manager.tag_in_question_or_not(tag_id["id"], question_id)
+    if not exist_in_question:
+        data = [question_id, tag_id["id"]]
+        data_manager.pairing_tag_with_question(data)
+    return redirect(url_for("display_question", id=question_id))
+
+
+@app.route('/question/<question_id>/tag/<tag_id>/delete')
+def delete_tag_from_question(question_id, tag_id):
+    data_manager.delete_tag_from_question(question_id, tag_id)
+    return redirect(url_for("display_question", id=question_id))
 
 
 if __name__ == "__main__":

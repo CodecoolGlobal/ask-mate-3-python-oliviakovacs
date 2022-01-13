@@ -66,4 +66,9 @@
     </table>
     </div>
     <div> <a href="/question/{{ id }}/new-answer">Add New Answer</a></div>
+    <div> <a href="/question/{{ id }}/new-tag">Add New Tag</a></div>
+    {% for tag in tags %}
+        <a href="url">{{ tag.name }}</a>
+        <a href="/question/{{ id }}/tag/{{ tag.id }}/delete">X</a>
+    {% endfor %}
 {% endblock %}

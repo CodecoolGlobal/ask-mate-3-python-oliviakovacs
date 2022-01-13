@@ -211,4 +211,73 @@ def get_latest_questions(cursor):
     cursor.execute(query)
     return cursor.fetchall()
 
+@connection.connection_handler
+def make_new_tag(cursor, tag_title):
+    query= '''
+    INSERT INTO tag(name)
+    VALUES(%(t_t)s) RETURNING id
+    '''
+    cursor.execute(query, {"t_t": tag_title})
+    return cursor.fetchone()
 
+
+@connection.connection_handler
+def pairing_tag_with_question(cursor,data):
+    query='''
+    INSERT INTO question_tag
+    VALUES (%(qid)s, %(tid)s)
+    '''
+    cursor.execute(query, {"qid": data[0], "tid": data[1]})
+
+
+@connection.connection_handler
+def tags_by_question_id(cursor, id):
+    query="""
+    SELECT *
+    FROM tag
+    JOIN question_tag qt on tag.id = qt.tag_id
+    WHERE question_id = %(id)s
+    ORDER BY name
+    """
+    cursor.execute(query, {"id": id})
+    return cursor.fetchall()
+
+@connection.connection_handler
+def select_tag_id_by_tag_name(cursor, t_name):
+    query="""
+    SELECT id
+    FROM tag
+    WHERE name = %(tag_name)s 
+    """
+    cursor.execute(query, {"tag_name": t_name})
+    return cursor.fetchone()
+
+@connection.connection_handler
+def tag_in_question_or_not(cursor, t_id, q_id):
+    query="""
+    SELECT question_id
+    FROM question_tag
+    WHERE question_id = %(q_id)s and tag_id = %(t_id)s
+    """
+    cursor.execute(query, {"t_id": t_id, "q_id": q_id})
+    return cursor.fetchone()
+
+@connection.connection_handler
+def all_tag(cursor):
+    query='''
+    SELECT name
+    FROM tag
+    ORDER BY name
+    '''
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def delete_tag_from_question(cursor,question_id, tag_id):
+    query='''
+    DELETE 
+    FROM question_tag
+    WHERE question_id = %(question_id)s and tag_id = %(tag_id)s
+    '''
+    cursor.execute(query, {"question_id": question_id, "tag_id": tag_id})
