@@ -45,7 +45,7 @@ def display_question(id):
     question_comments = data_manager.get_question_comment_by_question_id(id)
     answers_comments = data_manager.get_answer_comment_by_question_id(id)
     tags = data_manager.tags_by_question_id(id)
-    return render_template("question_by_id.html", question=question, answers=answers, cquestion_comments=question_comments, answers_comments=answers_comments, id=id, tags=tags)
+    return render_template("question_by_id.html", question=question, answers=answers, question_comments=question_comments, answers_comments=answers_comments, id=id, tags=tags)
 
 
 @app.route("/add-question", methods=["POST", "GET"])
@@ -98,7 +98,7 @@ def add_comment_to_question(question_id):
         data_manager.add_new_comment_to_question(new_comment)
         return redirect(url_for("display_question", id=question_id))
     comment = {'title': '', 'message': ''}
-    return render_template("form.html", visible_data=comment, route=f"/question/{question_id}/new-comment")
+    return render_template("comment.html", visible_data=comment, route=f"/question/{question_id}/new-comment")
 
 
 @app.route('/answer/<answer_id>/new-comment', methods=["POST", "GET"])
@@ -114,7 +114,7 @@ def add_comment_to_answer(answer_id):
         data_manager.add_new_comment_to_answer(new_comment)
         return redirect(url_for("display_question", id=question_id))
     comment = {'title': '', 'message': ''}
-    return render_template("form.html", visible_data=comment, route=f"/answer/{answer_id}/new-comment")
+    return render_template("comment.html", visible_data=comment, route=f"/answer/{answer_id}/new-comment")
 
 
 
@@ -226,7 +226,6 @@ def edit_comment(comment_id):
         return redirect(url_for("display_question", id=question_id))
     comment = data_manager.get_comment_by_id(comment_id)
     return render_template("edit_comment.html", comment=comment, c_id=comment_id)
-
 
 
 @app.route('/question/<question_id>/new-tag', methods=["POST", "GET"])

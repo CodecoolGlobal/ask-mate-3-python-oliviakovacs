@@ -19,7 +19,7 @@
         <div><a href="/question/{{ id }}/new-comment">Add New Comment</a></div>
             <table>
                 {% for q_comment in question_comments %}
-                <td>
+                <tr>
                     <td>{{ q_comment.message }}</td>
                     <td>{{ q_comment.submission_time }}</td>
                     <td>Edited {{ q_comment.edited_count }} times.</td>
