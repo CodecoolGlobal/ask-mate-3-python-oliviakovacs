@@ -309,6 +309,7 @@ def delete_tag_from_question(cursor,question_id, tag_id):
     cursor.execute(query, {"question_id": question_id, "tag_id": tag_id})
 
 
+@connection.connection_handler
 def get_content_by_search(cursor, search):
     query = """
     SELECT title, answer.message, question.id

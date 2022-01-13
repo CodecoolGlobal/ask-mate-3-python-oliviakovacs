@@ -35,7 +35,10 @@ def list_page():
 def display_search_result():
     search = main_page()
     questions_n_answers = data_manager.get_content_by_search(search)
-    return render_template("search.html", questions_n_answers=questions_n_answers)
+    if questions_n_answers:
+        return render_template("search.html", questions_n_answers=questions_n_answers)
+    else:
+        return render_template("error.html")
 
 
 @app.route("/question/<id>")
