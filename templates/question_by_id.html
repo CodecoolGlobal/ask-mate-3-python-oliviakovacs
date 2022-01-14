@@ -26,9 +26,11 @@
                     <td><form action="/comment/{{q_comment.id}}/edit">
                         <input type="submit" value="Edit Comment"><br><br></form></td>
                     <td>
-                        <form action="/comment/{{ data.id }}/{{ q_comment.id }}/delete">
-                            <input type="submit" value="Delete Comment" /><br><br>
-                        </form>
+{#                        <form action="/comment/{{ data.id }}/{{ q_comment.id }}/delete">#}
+{#                            <input type="submit" value="Delete Comment" /><br><br>#}
+{#                        </form>#}
+                        <button type="submit">
+                            <a href="/comment/{{ data.id }}/{{ q_comment.id }}/delete" onclick="return confirm('Are you sure?')">🗑</a></button>
                     </td>
                 </tr>
 
@@ -55,9 +57,12 @@
                     <td><form action="/comment/{{a_comment.id}}/edit">
                         <input type="submit" value="Edit Comment"><br><br></form></td>
                     <td>
-                        <form action="/comment/{{ answer.question_id }}/{{ a_comment.id }}/delete">
-                            <input type="submit" value="Delete Comment" /><br><br>
-                        </form>
+{#                        <form action="/comment/{{ answer.question_id }}/{{ a_comment.id }}/delete">#}
+{#                            <input type="submit" value="Delete Comment" /><br><br>#}
+{#                        </form>#}
+                        <button type="submit">
+                        <a href="/comment/{{ answer.question_id }}/{{ a_comment.id }}/delete" onclick="return confirm('Are you sure?')">🗑</a>
+                        </button>
                     </td>
                 </tr>
 

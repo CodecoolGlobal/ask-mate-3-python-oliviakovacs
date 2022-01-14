@@ -50,7 +50,7 @@ def get_answer_comment_by_question_id(cursor, id):
     query = '''
         SELECT *
         FROM comment c
-        WHERE c.answer_id = (SELECT a.id FROM answer a WHERE a.id = %(q_id)s)'''
+        WHERE c.answer_id IN (SELECT a.id FROM answer a WHERE a.question_id = %(q_id)s)'''
     cursor.execute(query, {'q_id': id})
     return cursor.fetchall()
 
@@ -149,7 +149,7 @@ def delete_comment_by_answer_id(cursor, id):
     query = """
        DELETE
        FROM comment c 
-       WHERE c.answer_id = (SELECT a.id FROM answer a WHERE a.id = %(q_id)s)"""
+       WHERE c.answer_id IN (SELECT a.id FROM answer a WHERE a.id = %(q_id)s)"""
     cursor.execute(query, {'q_id': id})
 
 
@@ -300,7 +300,7 @@ def all_tag(cursor):
 
 
 @connection.connection_handler
-def delete_tag_from_question(cursor,question_id, tag_id):
+def delete_tag_from_question(cursor, question_id, tag_id):
     query='''
     DELETE 
     FROM question_tag
