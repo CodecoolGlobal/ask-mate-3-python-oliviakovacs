@@ -12,4 +12,9 @@
         <button type="submit">Register</button>
     </form>
     </div>
+    {% if not new_user %}
+    <script>
+    alert("This username is already taken.")
+    </script>
+    {% endif %}
 {% endblock %}
