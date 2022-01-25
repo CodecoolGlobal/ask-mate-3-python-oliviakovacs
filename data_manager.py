@@ -345,4 +345,13 @@ def get_comment_by_id(cursor, id):
     cursor.execute(query, {'c_id': id})
     return cursor.fetchall()
 
+@connection.connection_handler
+def add_user(cursor,username, password, now):
+    query = """
+           INSERT INTO "user"
+           VALUES (%(name)s, %(password)s, %(reg_date)s, %(rep_num)s);
+        """
+    cursor.execute(query, {'name': username, 'password': password, 'reg_date': now, 'rep_num': 0})
+
+
 

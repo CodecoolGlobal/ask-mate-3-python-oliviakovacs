@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import data_manager
 import connection
 import datetime
@@ -14,6 +14,17 @@ def main():
     return render_template('bonus_questions.html', questions=SAMPLE_QUESTIONS)
 
 
+@app.route("/registration", methods=['GET', 'POST'])
+def registration():
+    if request.method == "POST":
+        print("jó helyen vagyunk")
+        username = request.form['username']
+        password = request.form['password']
+        now = datetime.datetime.now()
+        data_manager.add_user(username, password, now)
+        return redirect(url_for('login'))
+
+    return render_template('registration.html')
 
 @app.route("/", methods=['GET', 'POST'])
 def main_page():
