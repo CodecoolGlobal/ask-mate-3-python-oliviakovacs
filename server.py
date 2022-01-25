@@ -3,10 +3,16 @@ import data_manager
 import connection
 import datetime
 from markupsafe import Markup
-
+from bonus_questions import SAMPLE_QUESTIONS
 
 
 app = Flask(__name__)
+
+
+@app.route("/bonus-questions")
+def main():
+    return render_template('bonus_questions.html', questions=SAMPLE_QUESTIONS)
+
 
 
 @app.route("/", methods=['GET', 'POST'])
