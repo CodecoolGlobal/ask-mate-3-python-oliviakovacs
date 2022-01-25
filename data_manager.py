@@ -145,11 +145,11 @@ def delete_comment_by_question_id(cursor, id):
 
 
 @connection.connection_handler
-def delete_comment_by_answer_id(cursor, id):
+def delete_question_by_id(cursor, id):
     query = """
        DELETE
-       FROM comment c 
-       WHERE c.answer_id IN (SELECT a.id FROM answer a WHERE a.id = %(q_id)s)"""
+       FROM question
+       WHERE question.id = %(q_id)s """
     cursor.execute(query, {'q_id': id})
 
 
@@ -356,4 +356,14 @@ def reputation_counter(cursor, id):
     '''
     cursor.execute(query, {'id': id})
     return cursor.fetchone()
+
+
+@connection.connection_handler
+def add_user(cursor,username, password, now):
+    query = """
+           INSERT INTO "user" (name, user_password, registration_date, reputation)
+           VALUES (%(name)s, %(password)s, %(reg_date)s, %(rep_num)s);
+        """
+    cursor.execute(query, {'name': username, 'password': password, 'reg_date': now, 'rep_num': 0})
+
 

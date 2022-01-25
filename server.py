@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import data_manager
 import connection
 import datetime
-from markupsafe import Markup
 from bonus_questions import SAMPLE_QUESTIONS
+import security
 
 
 app = Flask(__name__)
@@ -14,6 +14,18 @@ def main():
     return render_template('bonus_questions.html', questions=SAMPLE_QUESTIONS)
 
 
+@app.route("/registration", methods=['GET', 'POST'])
+def registration():
+    if request.method == "POST":
+        print("jó helyen vagyunk")
+        username = request.form['username']
+        password = request.form['password']
+        hash_password = security.hash_password(password)
+        now = datetime.datetime.now()
+        data_manager.add_user(username, hash_password, now)
+        return redirect(url_for('login'))
+
+    return render_template('registration.html')
 
 @app.route("/", methods=['GET', 'POST'])
 def main_page():
@@ -130,9 +142,6 @@ def add_comment_to_answer(answer_id):
 
 @app.route('/question/<id>/delete', methods=["GET"])
 def delete_question(id):
-    data_manager.delete_comment_by_answer_id(id)
-    data_manager.delete_comment_by_question_id(id)
-    data_manager.delete_answer_by_question_id(id)
     data_manager.delete_question_by_id(id)
     return redirect("/list")
 
@@ -163,7 +172,6 @@ def edit_answer(answer_id):
 
 @app.route('/answer/<answer_id>/delete', methods=["POST", "GET"])
 def delete_answer(answer_id):
-    data_manager.delete_comment_by_answer_id(answer_id)
     return_question_id = data_manager.delete_answer_by_id(answer_id)
     return redirect("/question/" + str(return_question_id['question_id']))
 

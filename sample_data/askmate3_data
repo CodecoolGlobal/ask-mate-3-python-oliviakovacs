@@ -125,7 +125,7 @@ ALTER TABLE ONLY question_tag
 
 INSERT INTO "user" VALUES (1, 'test_user', '$2b$12$ba.6o.ADi/L66/5.snx.Ze.Rj/lN4.kAqqui08FdIXz3zpGnc0/Ye', '2017-04-28 08:29:00', 0);
 INSERT INTO "user" VALUES (2, 'test_user2', '$2b$12$g7Pnz5P4y.rkFfG.QOyZUev6.H7AKmP6YU0oQHEW1bUXCpU20YNry', '2021-01-25 12:58:00', 36);
-SELECT pg_catalog.setval('user_id_seq', 1, true);
+SELECT pg_catalog.setval('user_id_seq', 2, true);
 
 INSERT INTO question VALUES (0, '2017-04-28 08:29:00', 29, 7, 'How to make lists in Python?', 'I am totally new to this, any hints?', 0, 1);
 INSERT INTO question VALUES (1, '2017-04-29 09:19:00', 15, 9, 'Wordpress loading multiple jQuery Versions', 'I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $(".myBook").booklet();
