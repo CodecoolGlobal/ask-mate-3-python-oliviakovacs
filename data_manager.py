@@ -84,38 +84,38 @@ def get_question_ids(cursor):
 def add_new_question(cursor, new_question_data):
     query = """
        INSERT INTO question
-       VALUES (%(id)s,%(s_t)s,%(v_n)s,%(vo_nu)s,%(t_l)s,%(m_e)s,%(pic)s);
+       VALUES (%(id)s,%(s_t)s,%(v_n)s,%(vo_nu)s,%(t_l)s,%(m_e)s,%(pic)s, %(user_id)s);
     """
     cursor.execute(query, {'id': new_question_data[0], 's_t': new_question_data[1], 'v_n': new_question_data[2],
-    'vo_nu': new_question_data[3], 't_l': new_question_data[4], 'm_e': new_question_data[5],'pic': new_question_data[6]})
+    'vo_nu': new_question_data[3], 't_l': new_question_data[4], 'm_e': new_question_data[5],'pic': new_question_data[6], 'user_id': new_question_data[7]})
 
 
 @connection.connection_handler
 def add_new_answer(cursor, new_question_data):
     query = """
        INSERT INTO answer
-       VALUES (%(id)s,%(s_t)s,%(v_n)s,%(q_i)s,%(m_a)s,%(pic)s);
+       VALUES (%(id)s,%(s_t)s,%(v_n)s,%(q_i)s,%(m_a)s,%(pic)s, %(user_id)s);
     """
     cursor.execute(query, {'id': new_question_data[0], 's_t': new_question_data[1], 'v_n': new_question_data[2],
-    'q_i': new_question_data[3], 'm_a': new_question_data[4],'pic': new_question_data[5]})
+    'q_i': new_question_data[3], 'm_a': new_question_data[4],'pic': new_question_data[5], 'user_id': new_question_data[6]})
 
 
 @connection.connection_handler
 def add_new_comment_to_question(cursor, new_comment_data):
     query = """
-    INSERT INTO comment (submission_time, question_id, message, edited_count)
-    VALUES (%(s_t)s, %(q_id)s, %(m_a)s, %(e_c)s)
+    INSERT INTO comment (submission_time, question_id, message, edited_count, user_id)
+    VALUES (%(s_t)s, %(q_id)s, %(m_a)s, %(e_c)s, %(user_id)s)
     """
-    cursor.execute(query, {'e_c': 0, 's_t': new_comment_data[0], 'q_id': new_comment_data[1], 'm_a': new_comment_data[2]})
+    cursor.execute(query, {'e_c': 0, 's_t': new_comment_data[0], 'q_id': new_comment_data[1], 'm_a': new_comment_data[2], 'user_id': new_comment_data[3]})
 
 
 @connection.connection_handler
 def add_new_comment_to_answer(cursor, new_comment_data):
     query = """
-    INSERT INTO comment (submission_time, answer_id, message, edited_count)
-    VALUES (%(s_t)s, %(a_id)s, %(m_a)s, %(e_c)s)
+    INSERT INTO comment (submission_time, answer_id, message, edited_count, user_id)
+    VALUES (%(s_t)s, %(a_id)s, %(m_a)s, %(e_c)s, %(user_id)s)
     """
-    cursor.execute(query, {'e_c': 0, 's_t': new_comment_data[0], 'a_id': new_comment_data[1], 'm_a': new_comment_data[2]})
+    cursor.execute(query, {'e_c': 0, 's_t': new_comment_data[0], 'a_id': new_comment_data[1], 'm_a': new_comment_data[2], 'user_id': new_comment_data[3]})
 
 @connection.connection_handler
 def delete_question_by_id(cursor, id):
@@ -363,4 +363,14 @@ def get_user_names(cursor):
     """
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_user_id_by_username(cursor, username):
+    query = """
+    SELECT id
+    FROM "user"
+    WHERE name =%(username)s"""
+    cursor.execute(query, {'username': username })
+    return cursor.fetchone()
 
