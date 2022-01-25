@@ -20,7 +20,6 @@ def registration():
     if request.method == "POST":
         username = request.form['username']
         all_user_names = data_manager.get_user_names()
-        print(all_user_names)
         if username in all_user_names:
             return render_template('registration.html', new_user=False)
         password = request.form['password']
@@ -39,14 +38,11 @@ def login():
         username = request.form['username']
         password = request.form['password']
         all_users = data_manager.get_user_names()
-        print(all_users)
         for user in all_users:
             if user["name"] == username:
                 hashed_password = user["user_password"]
-                print(hashed_password)
                 if security.verify_password(password, hashed_password):
                         session['user'] = username
-                        print(username)
                         return redirect(url_for("main_page"))
                 else:
                     valid_login = False
@@ -122,7 +118,6 @@ def add_question():
         new_question.append(max_id[0]['maximum'])
         new_question.append(now)
         new_question.append(0)
-        "egy random string"
         new_question.append(0)
         new_question.append(request.form.get("title"))
         new_question.append(request.form.get("message"))
