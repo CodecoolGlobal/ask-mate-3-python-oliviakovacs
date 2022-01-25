@@ -141,9 +141,6 @@ def add_comment_to_answer(answer_id):
 
 @app.route('/question/<id>/delete', methods=["GET"])
 def delete_question(id):
-    data_manager.delete_comment_by_answer_id(id)
-    data_manager.delete_comment_by_question_id(id)
-    data_manager.delete_answer_by_question_id(id)
     data_manager.delete_question_by_id(id)
     return redirect("/list")
 
@@ -174,7 +171,6 @@ def edit_answer(answer_id):
 
 @app.route('/answer/<answer_id>/delete', methods=["POST", "GET"])
 def delete_answer(answer_id):
-    data_manager.delete_comment_by_answer_id(answer_id)
     return_question_id = data_manager.delete_answer_by_id(answer_id)
     return redirect("/question/" + str(return_question_id['question_id']))
 

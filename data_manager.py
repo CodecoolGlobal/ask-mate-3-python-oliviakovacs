@@ -145,11 +145,11 @@ def delete_comment_by_question_id(cursor, id):
 
 
 @connection.connection_handler
-def delete_comment_by_answer_id(cursor, id):
+def delete_question_by_id(cursor, id):
     query = """
        DELETE
-       FROM comment c 
-       WHERE c.answer_id IN (SELECT a.id FROM answer a WHERE a.id = %(q_id)s)"""
+       FROM question
+       WHERE question.id = %(q_id)s """
     cursor.execute(query, {'q_id': id})
 
 
