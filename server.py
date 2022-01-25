@@ -111,6 +111,7 @@ def add_question():
         new_question.append(max_id[0]['maximum'])
         new_question.append(now)
         new_question.append(0)
+        "egy random string"
         new_question.append(0)
         new_question.append(request.form.get("title"))
         new_question.append(request.form.get("message"))
