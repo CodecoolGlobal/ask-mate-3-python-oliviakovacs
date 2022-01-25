@@ -2,8 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import data_manager
 import connection
 import datetime
-from markupsafe import Markup
 from bonus_questions import SAMPLE_QUESTIONS
+import security
 
 
 app = Flask(__name__)
@@ -20,8 +20,9 @@ def registration():
         print("jó helyen vagyunk")
         username = request.form['username']
         password = request.form['password']
+        hash_password = security.hash_password(password)
         now = datetime.datetime.now()
-        data_manager.add_user(username, password, now)
+        data_manager.add_user(username, hash_password, now)
         return redirect(url_for('login'))
 
     return render_template('registration.html')

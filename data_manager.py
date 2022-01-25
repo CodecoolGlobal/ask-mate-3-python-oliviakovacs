@@ -348,7 +348,7 @@ def get_comment_by_id(cursor, id):
 @connection.connection_handler
 def add_user(cursor,username, password, now):
     query = """
-           INSERT INTO "user"
+           INSERT INTO "user" (name, user_password, registration_date, reputation)
            VALUES (%(name)s, %(password)s, %(reg_date)s, %(rep_num)s);
         """
     cursor.execute(query, {'name': username, 'password': password, 'reg_date': now, 'rep_num': 0})
