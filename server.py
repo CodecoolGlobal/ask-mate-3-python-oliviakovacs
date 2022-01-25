@@ -274,6 +274,10 @@ def delete_tag_from_question(question_id, tag_id):
     return redirect(url_for("display_question", id=question_id))
 
 
+@app.route('/user/<user_id>')
+def user_page(user_id):
+    pass
+
 if __name__ == "__main__":
     app.run(
         host='0.0.0.0',

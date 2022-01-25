@@ -345,4 +345,15 @@ def get_comment_by_id(cursor, id):
     cursor.execute(query, {'c_id': id})
     return cursor.fetchall()
 
+@connection.connection_handler
+def reputation_counter(cursor, id):
+    query='''
+    SELECT (COUNT(answer.vote_number)*10)+(COUNT(accepted)*15)+(COUNT(question.vote_number)*5) AS reputation
+    FROM answer
+    FULL JOIN question
+    ON question.user_id=answer.user_id
+    WHERE answer.user_id = %(id)s OR question.user_id = %(id)s
+    '''
+    cursor.execute(query, {'id': id})
+    return cursor.fetchone()
 
