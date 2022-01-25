@@ -70,15 +70,19 @@ def main_page():
 
 @app.route("/list", methods=['GET'])
 def list_page():
-    if request.args:
-        order = request.args['order-by']
-        direction = request.args['direction']
-        data = data_manager.get_questions(order, direction)
+    if "user" in session:
+        if request.args:
+            order = request.args['order-by']
+            direction = request.args['direction']
+            data = data_manager.get_questions(order, direction)
+            headers = data_manager.get_question_headers()
+            return render_template('list.html', questions=data, headers=headers, logged_in=True)
+        data = data_manager.get_questions('submission_time', 'DESC')
         headers = data_manager.get_question_headers()
-        return render_template('list.html', questions=data, headers=headers)
+        return render_template('list.html', questions=data, headers=headers,logged_in=True)
     data = data_manager.get_questions('submission_time', 'DESC')
     headers = data_manager.get_question_headers()
-    return render_template('list.html', questions=data, headers=headers)
+    return render_template('list.html', questions=data, headers=headers, logged_in=False)
 
 
 @app.route("/search", methods=['POST'])
@@ -94,12 +98,19 @@ def display_search_result():
 
 @app.route("/question/<id>")
 def display_question(id):
+    if "user" in session:
+        question = data_manager.get_question_by_id(id)
+        answers = data_manager.get_answers_by_question_id(id)
+        question_comments = data_manager.get_question_comment_by_question_id(id)
+        answers_comments = data_manager.get_answer_comment_by_question_id(id)
+        tags = data_manager.tags_by_question_id(id)
+        return render_template("question_by_id.html", question=question, answers=answers, question_comments=question_comments, answers_comments=answers_comments, id=id, tags=tags, logged_in=True)
     question = data_manager.get_question_by_id(id)
     answers = data_manager.get_answers_by_question_id(id)
     question_comments = data_manager.get_question_comment_by_question_id(id)
     answers_comments = data_manager.get_answer_comment_by_question_id(id)
     tags = data_manager.tags_by_question_id(id)
-    return render_template("question_by_id.html", question=question, answers=answers, question_comments=question_comments, answers_comments=answers_comments, id=id, tags=tags)
+    return render_template("question_by_id.html", question=question, answers=answers, question_comments=question_comments, answers_comments=answers_comments, id=id, tags=tags, logged_in=False)
 
 
 @app.route("/add-question", methods=["POST", "GET"])

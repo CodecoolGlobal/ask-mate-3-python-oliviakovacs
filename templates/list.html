@@ -33,7 +33,9 @@
                 </div>
             {% endfor %}
         </ol>
+    {% if logged_in %}
     </div>
     <div> <a href="/add-question">Add New Question</a>
     </div>
+    {% endif %}
 {% endblock %}
