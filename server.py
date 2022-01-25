@@ -7,6 +7,7 @@ import security
 
 
 app = Flask(__name__)
+app.secret_key = "ask_mate_3"
 
 
 @app.route("/bonus-questions")
@@ -17,23 +18,54 @@ def main():
 @app.route("/registration", methods=['GET', 'POST'])
 def registration():
     if request.method == "POST":
-        print("jó helyen vagyunk")
         username = request.form['username']
+        all_user_names = data_manager.get_user_names()
+        print(all_user_names)
+        if username in all_user_names:
+            return render_template('registration.html', new_user=False)
         password = request.form['password']
         hash_password = security.hash_password(password)
         now = datetime.datetime.now()
         data_manager.add_user(username, hash_password, now)
-        return redirect(url_for('login'))
+        session["user"] = username
+        return redirect(url_for('main_page'))
+    return render_template('registration.html', new_user=True)
 
-    return render_template('registration.html')
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method == "POST":
+        session.pop('username', None)
+        username = request.form['username']
+        password = request.form['password']
+        all_users = data_manager.get_user_names()
+        print(all_users)
+        for user in all_users:
+            if user["name"] == username:
+                hashed_password = user["user_password"]
+                print(hashed_password)
+                if security.verify_password(password, hashed_password):
+                        session['user'] = username
+                        print(username)
+                        return redirect(url_for("main_page"))
+                else:
+                    valid_login = False
+                    return render_template("login.html", valid_login=valid_login)
+    return render_template("login.html", valid_login=True)
+
 
 @app.route("/", methods=['GET', 'POST'])
 def main_page():
     if request.method == 'POST':
         search = request.form['search']
         return search
+    if "user" in session:
+        user = session["user"]
+        all_questions = data_manager.get_latest_questions()
+        return render_template('main.html', questions=all_questions, logged_in=True)
+
     all_questions = data_manager.get_latest_questions()
-    return render_template('main.html', questions=all_questions)
+    return render_template('main.html', questions=all_questions, logged_in=False)
 
 
 @app.route("/list", methods=['GET'])
