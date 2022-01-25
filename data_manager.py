@@ -354,4 +354,14 @@ def add_user(cursor,username, password, now):
     cursor.execute(query, {'name': username, 'password': password, 'reg_date': now, 'rep_num': 0})
 
 
-
+@connection.connection_handler
+def get_user_list(cursor):
+    query = """
+        SELECT u.id AS id, u.name AS name, u.registration_date AS registration_date, COUNT(a) AS answer_number, COUNT(c) AS comment_number, reputation
+        FROM "user" u
+        LEFT JOIN question q ON u.id = q.id
+        LEFT JOIN answer a ON u.id = a.user_id
+        LEFT JOIN comment c ON u.id = c.user_id
+        GROUP BY u.id, u.name, u.registration_date, u.reputation"""
+    cursor.execute(query)
+    return cursor.fetchall()
