@@ -7,6 +7,7 @@ import security
 
 
 app = Flask(__name__)
+app.secret_key = "ask_mate_3"
 
 
 @app.route("/bonus-questions")
@@ -17,15 +18,38 @@ def main():
 @app.route("/registration", methods=['GET', 'POST'])
 def registration():
     if request.method == "POST":
-        print("jó helyen vagyunk")
         username = request.form['username']
+        all_user_names = data_manager.get_user_names()
+        if username in all_user_names:
+            return render_template('registration.html', new_user=False)
         password = request.form['password']
         hash_password = security.hash_password(password)
         now = datetime.datetime.now()
         data_manager.add_user(username, hash_password, now)
-        return redirect(url_for('login'))
+        session["user"] = username
+        return redirect(url_for('main_page'))
+    return render_template('registration.html', new_user=True)
 
-    return render_template('registration.html')
+
+# ilyen user már van
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method == "POST":
+        session.pop('username', None)
+        username = request.form['username']
+        password = request.form['password']
+        all_users = data_manager.get_user_names()
+        for user in all_users:
+            if user["name"] == username:
+                hashed_password = user["user_password"]
+                if security.verify_password(password, hashed_password):
+                        session['user'] = username
+                        return redirect(url_for("main_page"))
+                else:
+                    valid_login = False
+                    return render_template("login.html", valid_login=valid_login)
+    return render_template("login.html", valid_login=True)
+
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -33,21 +57,36 @@ def main_page():
     if request.method == 'POST':
         search = request.form['search']
         return search
+    if "user" in session:
+        user = session["user"]
+        all_questions = data_manager.get_latest_questions()
+        return render_template('main.html', questions=all_questions, logged_in=True)
+
     all_questions = data_manager.get_latest_questions()
-    return render_template('main.html', questions=all_questions)
+    return render_template('main.html', questions=all_questions, logged_in=False)
 
 
 @app.route("/list", methods=['GET'])
 def list_page():
+    if "user" in session:
+        if request.args:
+            order = request.args['order-by']
+            direction = request.args['direction']
+            data = data_manager.get_questions(order, direction)
+            headers = data_manager.get_question_headers()
+            return render_template('list.html', questions=data, headers=headers, logged_in=True)
+        data = data_manager.get_questions('submission_time', 'DESC')
+        headers = data_manager.get_question_headers()
+        return render_template('list.html', questions=data, headers=headers,logged_in=True)
     if request.args:
         order = request.args['order-by']
         direction = request.args['direction']
         data = data_manager.get_questions(order, direction)
         headers = data_manager.get_question_headers()
-        return render_template('list.html', questions=data, headers=headers)
+        return render_template('list.html', questions=data, headers=headers, logged_in=False)
     data = data_manager.get_questions('submission_time', 'DESC')
     headers = data_manager.get_question_headers()
-    return render_template('list.html', questions=data, headers=headers)
+    return render_template('list.html', questions=data, headers=headers, logged_in=False)
 
 
 @app.route("/search", methods=['POST'])
@@ -67,92 +106,135 @@ def display_question(id):
     user_id = ""
     if 'user' in session:
         user_id = data_manager.get_user_id_by_name(session['user'])["id"]
-        if user_id == id:
+        he_made_the_question_id = data_manager.get_user_id_by_question_id(id)
+        if user_id == he_made_the_question_id["user_id"]:
             authority = True
+    if "user" in session:
+        question = data_manager.get_question_by_id(id)
+        answers = data_manager.get_answers_by_question_id(id)
+        question_comments = data_manager.get_question_comment_by_question_id(id)
+        answers_comments = data_manager.get_answer_comment_by_question_id(id)
+        tags = data_manager.tags_by_question_id(id)
+        user = data_manager.get_user_id_by_username(session["user"])
+        user_id = user["id"]
+        return render_template("question_by_id.html", question=question, answers=answers,\
+                               question_comments=question_comments,\
+                               answers_comments=answers_comments, id=id, tags=tags, logged_in=True, same_user=user_id, authority=authority)
+
     question = data_manager.get_question_by_id(id)
     answers = data_manager.get_answers_by_question_id(id)
     question_comments = data_manager.get_question_comment_by_question_id(id)
     answers_comments = data_manager.get_answer_comment_by_question_id(id)
     tags = data_manager.tags_by_question_id(id)
-    return render_template("question_by_id.html", question=question, answers=answers, question_comments=question_comments, answers_comments=answers_comments, id=id, tags=tags, authority=authority)
+    not_existent_user_id = -1
+    return render_template("question_by_id.html", question=question, answers=answers, question_comments=question_comments,\
+                           answers_comments=answers_comments, id=id, tags=tags, logged_in=False, user_id=not_existent_user_id, authority=authority)
 
 
 @app.route("/add-question", methods=["POST", "GET"])
 def add_question():
-    if request.method == "POST":
-        max_id = data_manager.get_question_ids()
-        now = datetime.datetime.now()
-        new_question=[]
-        new_question.append(max_id[0]['maximum'])
-        new_question.append(now)
-        new_question.append(0)
-        new_question.append(0)
-        new_question.append(request.form.get("title"))
-        new_question.append(request.form.get("message"))
-        new_question.append(request.form.get("image"))
-        data_manager.add_new_question(new_question)
-        return redirect('/list')
+    if "user" in session:
+        if request.method == "POST":
+            max_id = data_manager.get_question_ids()
+            now = datetime.datetime.now()
+            new_question=[]
+            new_question.append(max_id[0]['maximum'])
+            new_question.append(now)
+            new_question.append(0)
+            new_question.append(0)
+            new_question.append(request.form.get("title"))
+            new_question.append(request.form.get("message"))
+            new_question.append(request.form.get("image"))
+            user = session["user"]
+            user_id = data_manager.get_user_id_by_username(user)
+            new_question.append(user_id["id"])
+            data_manager.add_new_question(new_question)
+            return redirect('/list')
 
-    question = {'title': '', 'message': ''}
-    return render_template("form.html", visible_data=question, route="/add-question", is_question=True)
+        question = {'title': '', 'message': ''}
+        return render_template("form.html", visible_data=question, route="/add-question", is_question=True)
+    return redirect(url_for("main_page"))
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
 def add_answer(question_id):
-    if request.method == "POST":
-        max_id = data_manager.get_question_ids()
-        max_answer_id = data_manager.get_answer_ids()
-        now = datetime.datetime.now()
-        new_answer = []
-        new_answer.append(max_answer_id[0]['maximum'])
-        new_answer.append(now)
-        new_answer.append(0)
-        new_answer.append(question_id)
-        new_answer.append(request.form.get("message"))
-        new_answer.append(request.form.get("image"))
-        data_manager.add_new_answer(new_answer)
-        return redirect(f"/question/{question_id}")
-    question = {'title': '', 'message': ''}
-    return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False)
+    if "user" in session:
+        if request.method == "POST":
+            max_id = data_manager.get_question_ids()
+            max_answer_id = data_manager.get_answer_ids()
+            now = datetime.datetime.now()
+            new_answer = []
+            new_answer.append(max_answer_id[0]['maximum'])
+            new_answer.append(now)
+            new_answer.append(0)
+            new_answer.append(question_id)
+            new_answer.append(request.form.get("message"))
+            new_answer.append(request.form.get("image"))
+            user = session["user"]
+            user_id = data_manager.get_user_id_by_username(user)
+            new_answer.append(user_id["id"])
+            data_manager.add_new_answer(new_answer)
+            return redirect(f"/question/{question_id}")
+        question = {'title': '', 'message': ''}
+        return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False)
+    return redirect(url_for("main_page"))
 
 
 @app.route('/question/<question_id>/new-comment', methods=["POST", "GET"])
 def add_comment_to_question(question_id):
-    if request.method == "POST":
-        now = datetime.datetime.now()
-        new_comment = []
-        new_comment.append(now)
-        new_comment.append(question_id)
-        new_comment.append(request.form.get("message"))
-        data_manager.add_new_comment_to_question(new_comment)
-        return redirect(url_for("display_question", id=question_id))
-    comment = {'title': '', 'message': ''}
-    return render_template("comment.html", visible_data=comment, route=f"/question/{question_id}/new-comment")
+    if "user" in session:
+        if request.method == "POST":
+            now = datetime.datetime.now()
+            new_comment = []
+            new_comment.append(now)
+            new_comment.append(question_id)
+            new_comment.append(request.form.get("message"))
+            user = session["user"]
+            user_id = data_manager.get_user_id_by_username(user)
+            new_comment.append(user_id["id"])
+            data_manager.add_new_comment_to_question(new_comment)
+            return redirect(url_for("display_question", id=question_id))
+        comment = {'title': '', 'message': ''}
+        return render_template("comment.html", visible_data=comment, route=f"/question/{question_id}/new-comment")
+    return redirect(url_for("main_page"))
 
 
 @app.route('/answer/<answer_id>/new-comment', methods=["POST", "GET"])
 def add_comment_to_answer(answer_id):
-    if request.method == "POST":
-        question_id = data_manager.get_question_id_by_answer(answer_id)
-        question_id = question_id['question_id']
-        now = datetime.datetime.now()
-        new_comment = []
-        new_comment.append(now)
-        new_comment.append(answer_id)
-        new_comment.append(request.form.get("message"))
-        data_manager.add_new_comment_to_answer(new_comment)
-        return redirect(url_for("display_question", id=question_id))
-    comment = {'title': '', 'message': ''}
-    return render_template("comment.html", visible_data=comment, route=f"/answer/{answer_id}/new-comment")
-
+    if "user" in session:
+        if request.method == "POST":
+            question_id = data_manager.get_question_id_by_answer(answer_id)
+            question_id = question_id['question_id']
+            now = datetime.datetime.now()
+            new_comment = []
+            new_comment.append(now)
+            new_comment.append(answer_id)
+            new_comment.append(request.form.get("message"))
+            user = session["user"]
+            user_id = data_manager.get_user_id_by_username(user)
+            new_comment.append(user_id["id"])
+            data_manager.add_new_comment_to_answer(new_comment)
+            return redirect(url_for("display_question", id=question_id))
+        comment = {'title': '', 'message': ''}
+        return render_template("comment.html", visible_data=comment, route=f"/answer/{answer_id}/new-comment")
+    return redirect(url_for("main_page"))
 
 
 @app.route('/question/<id>/delete', methods=["GET"])
 def delete_question(id):
-    data_manager.delete_question_by_id(id)
+    question = data_manager.get_question_by_id(id)
+    if "user" in session:
+        user = session["user"]
+        question_user = data_manager.get_user_id_by_username(user)
+        user_id = question_user["id"]
+        for data in question:
+            q_user_id = data["user_id"]
+        if int(user_id) == int(q_user_id):
+            data_manager.delete_question_by_id(id)
     return redirect("/list")
 
 
+# erre is
 @app.route('/question/<question_id>/edit', methods=["POST", "GET"])
 def edit_question(question_id):
     if request.method == "POST":
@@ -165,6 +247,7 @@ def edit_question(question_id):
     return render_template("edit_question.html", question=question, q_id=question_id)
 
 
+# erre is
 @app.route('/answer/<answer_id>/edit', methods=["POST", "GET"])
 def edit_answer(answer_id):
     if request.method == "POST":
@@ -177,12 +260,14 @@ def edit_answer(answer_id):
     return render_template("edit_answer.html", answer=answer, a_id=answer_id)
 
 
+# erre is
 @app.route('/answer/<answer_id>/delete', methods=["POST", "GET"])
 def delete_answer(answer_id):
     return_question_id = data_manager.delete_answer_by_id(answer_id)
     return redirect("/question/" + str(return_question_id['question_id']))
 
 
+# erre is
 @app.route('/comment/<id>/<comment_id>/delete', methods=["POST", "GET"])
 def delete_comment(id, comment_id):
     data_manager.delete_comment_by_id(comment_id)
@@ -229,6 +314,7 @@ def vote_down_answer(id):
     return redirect(url_for("display_question", id=question_id))
 
 
+# erre rá kell nézni
 @app.route('/question/pics/<link>')
 def giv_pics_to_question(link):
     header = connection.DATA_HEADER_QUESTION
@@ -239,6 +325,7 @@ def giv_pics_to_question(link):
     return render_template('ask_mate_1/list.html', questions=default_sort_data)
 
 
+# erre is
 @app.route('/answer/pics/<link>')
 def giv_pics_to_answer(link):
     header = connection.DATA_HEADER_ANSWER
@@ -249,6 +336,7 @@ def giv_pics_to_answer(link):
     return render_template('ask_mate_1/list.html', questions=default_sort_data)
 
 
+# erre is
 @app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
 def edit_comment(comment_id):
     if request.method == "POST":
@@ -311,9 +399,14 @@ def answer_un_accepted(answer_id, answer_user_id, id):
     data_manager.minus_15(answer_user_id)
     return redirect(url_for("display_question", id=id))
 
-@app.route('/user/<user_id>')
-def user_page(user_id):
-    pass
+
+@app.route('/users')
+def users_page():
+    if "user" in session:
+        users = data_manager.get_user_list()
+        return render_template('users.html', users=users)
+    else:
+        return redirect('/login')
 
 
 if __name__ == "__main__":

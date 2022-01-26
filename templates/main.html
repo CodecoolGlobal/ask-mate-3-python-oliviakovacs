@@ -3,6 +3,7 @@
 {% block title %}Main page{% endblock %}
 
 {% block body %}
+
     <ol>
     {% for question in questions %}
             <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
@@ -16,8 +17,12 @@
     <form action="/list">
         <button type="submit">See all questions</button>
     </form>
+    {% if not logged_in %}
     <form action="/registration">
         <button type="submit">Go to registration</button>
     </form>
-
+    <form action="/login">
+        <button type="submit">Log in</button>
+    </form>
+    {% endif %}
 {% endblock %}

@@ -14,7 +14,7 @@ def get_questions(cursor, order="submission_time", direction="DESC"):
 @connection.connection_handler
 def get_question_by_id(cursor, id):
     query = '''
-        SELECT title, message, vote_number, view_number, id
+        SELECT title, message, vote_number, view_number, id, user_id
         FROM question
         WHERE id = %(q)s
         '''
@@ -37,7 +37,7 @@ def get_answers_by_question_id(cursor, id):
 @connection.connection_handler
 def get_question_comment_by_question_id(cursor, id):
     query = '''
-            SELECT id, message, submission_time, edited_count
+            SELECT id, message, submission_time, edited_count, user_id
             FROM comment
             WHERE question_id = %(q)s
             '''
@@ -84,38 +84,38 @@ def get_question_ids(cursor):
 def add_new_question(cursor, new_question_data):
     query = """
        INSERT INTO question
-       VALUES (%(id)s,%(s_t)s,%(v_n)s,%(vo_nu)s,%(t_l)s,%(m_e)s,%(pic)s);
+       VALUES (%(id)s,%(s_t)s,%(v_n)s,%(vo_nu)s,%(t_l)s,%(m_e)s,%(pic)s, %(user_id)s);
     """
     cursor.execute(query, {'id': new_question_data[0], 's_t': new_question_data[1], 'v_n': new_question_data[2],
-    'vo_nu': new_question_data[3], 't_l': new_question_data[4], 'm_e': new_question_data[5],'pic': new_question_data[6]})
+    'vo_nu': new_question_data[3], 't_l': new_question_data[4], 'm_e': new_question_data[5],'pic': new_question_data[6], 'user_id': new_question_data[7]})
 
 
 @connection.connection_handler
 def add_new_answer(cursor, new_question_data):
     query = """
        INSERT INTO answer
-       VALUES (%(id)s,%(s_t)s,%(v_n)s,%(q_i)s,%(m_a)s,%(pic)s);
+       VALUES (%(id)s,%(s_t)s,%(v_n)s,%(q_i)s,%(m_a)s,%(pic)s, %(user_id)s);
     """
     cursor.execute(query, {'id': new_question_data[0], 's_t': new_question_data[1], 'v_n': new_question_data[2],
-    'q_i': new_question_data[3], 'm_a': new_question_data[4],'pic': new_question_data[5]})
+    'q_i': new_question_data[3], 'm_a': new_question_data[4],'pic': new_question_data[5], 'user_id': new_question_data[6]})
 
 
 @connection.connection_handler
 def add_new_comment_to_question(cursor, new_comment_data):
     query = """
-    INSERT INTO comment (submission_time, question_id, message, edited_count)
-    VALUES (%(s_t)s, %(q_id)s, %(m_a)s, %(e_c)s)
+    INSERT INTO comment (submission_time, question_id, message, edited_count, user_id)
+    VALUES (%(s_t)s, %(q_id)s, %(m_a)s, %(e_c)s, %(user_id)s)
     """
-    cursor.execute(query, {'e_c': 0, 's_t': new_comment_data[0], 'q_id': new_comment_data[1], 'm_a': new_comment_data[2]})
+    cursor.execute(query, {'e_c': 0, 's_t': new_comment_data[0], 'q_id': new_comment_data[1], 'm_a': new_comment_data[2], 'user_id': new_comment_data[3]})
 
 
 @connection.connection_handler
 def add_new_comment_to_answer(cursor, new_comment_data):
     query = """
-    INSERT INTO comment (submission_time, answer_id, message, edited_count)
-    VALUES (%(s_t)s, %(a_id)s, %(m_a)s, %(e_c)s)
+    INSERT INTO comment (submission_time, answer_id, message, edited_count, user_id)
+    VALUES (%(s_t)s, %(a_id)s, %(m_a)s, %(e_c)s, %(user_id)s)
     """
-    cursor.execute(query, {'e_c': 0, 's_t': new_comment_data[0], 'a_id': new_comment_data[1], 'm_a': new_comment_data[2]})
+    cursor.execute(query, {'e_c': 0, 's_t': new_comment_data[0], 'a_id': new_comment_data[1], 'm_a': new_comment_data[2], 'user_id': new_comment_data[3]})
 
 @connection.connection_handler
 def delete_question_by_id(cursor, id):
@@ -227,6 +227,7 @@ def get_answer_by_id(cursor, id):
     cursor.execute(query, {'q': id})
     return cursor.fetchall()
 
+
 @connection.connection_handler
 def get_latest_questions(cursor):
     query = """
@@ -236,6 +237,7 @@ def get_latest_questions(cursor):
     """
     cursor.execute(query)
     return cursor.fetchall()
+
 
 @connection.connection_handler
 def make_new_tag(cursor, tag_title):
@@ -268,6 +270,7 @@ def tags_by_question_id(cursor, id):
     cursor.execute(query, {"id": id})
     return cursor.fetchall()
 
+
 @connection.connection_handler
 def select_tag_id_by_tag_name(cursor, t_name):
     query="""
@@ -278,6 +281,7 @@ def select_tag_id_by_tag_name(cursor, t_name):
     cursor.execute(query, {"tag_name": t_name})
     return cursor.fetchone()
 
+
 @connection.connection_handler
 def tag_in_question_or_not(cursor, t_id, q_id):
     query="""
@@ -287,6 +291,7 @@ def tag_in_question_or_not(cursor, t_id, q_id):
     """
     cursor.execute(query, {"t_id": t_id, "q_id": q_id})
     return cursor.fetchone()
+
 
 @connection.connection_handler
 def all_tag(cursor):
@@ -355,6 +360,7 @@ def reputation_minus_two(cursor, id):
     """
     cursor.execute(query, {'id': id})
 
+
 @connection.connection_handler
 def add_user(cursor, username, password, now):
     query = """
@@ -371,7 +377,7 @@ def get_user_id_by_name(cursor,username):
     FROM "user"
     WHERE name = %(user_name)s
     '''
-    cursor.execute(query, {'name': username})
+    cursor.execute(query, {'user_name': username})
     return cursor.fetchone()
 
 
@@ -436,3 +442,35 @@ def change_reputation_up(cursor, received_id, num):
         """
     cursor.execute(query, {"received_id": received_id, "num": num})
 
+
+@connection.connection_handler
+def get_user_names(cursor):
+    query = """
+    SELECT name, user_password
+    FROM "user"
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_user_id_by_username(cursor, username):
+    query = """
+    SELECT id
+    FROM "user"
+    WHERE name =%(username)s"""
+    cursor.execute(query, {'username': username })
+    return cursor.fetchone()
+
+
+@connection.connection_handler
+def get_user_list(cursor):
+    query = """
+        SELECT u.id AS id, u.name AS name, u.registration_date AS registration_date, COUNT(a) AS answer_number, COUNT(c) AS comment_number, reputation
+        FROM "user" u
+        LEFT JOIN question q ON u.id = q.id
+        LEFT JOIN answer a ON u.id = a.user_id
+        LEFT JOIN comment c ON u.id = c.user_id
+        GROUP BY u.id, u.name, u.registration_date, u.reputation"""
+    cursor.execute(query)
+    return cursor.fetchall()

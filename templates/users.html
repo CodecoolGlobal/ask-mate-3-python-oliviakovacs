@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>USERS</title>
+</head>
+<body>
+
+<h1>USERS</h1>
+
+<table>
+    {% for user in users %}
+        <tr>
+            <td><a href="/users/{{ user.id }}">{{ user.name }}</a></td> #<<<<<<< validalas szukseges
+            <td>{{ user.registration_date }}</td>
+            <td>{{ user.question_number }}</td>
+            <td>{{ user.answer_number }}</td>
+            <td>{{ user.comment_number }}</td>
+            <td>{{ user.reputation }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
