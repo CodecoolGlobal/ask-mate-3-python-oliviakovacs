@@ -409,6 +409,12 @@ def users_page():
         return redirect('/login')
 
 
+@app.route('/user/<user_id>')
+def user_page(user_id):
+    username = data_manager.get_username_by_id(user_id)["name"]
+    return render_template('user.html', name=username)
+
+
 if __name__ == "__main__":
     app.run(
         host='0.0.0.0',

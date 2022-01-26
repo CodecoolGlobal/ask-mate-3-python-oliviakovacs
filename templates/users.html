@@ -3,15 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>USERS</title>
+    <style>
+        table, th, td {
+        border:1px solid black;}
+    </style>
 </head>
 <body>
 
 <h1>USERS</h1>
 
-<table>
+<table style="width:100%">
+    <th>User ID</th>
+    <th>Username</th>
+    <th>Registration Date</th>
+    <th>How many Questions asked</th>
+    <th>How many Answer made</th>
+    <th>How many comment made</th>
+    <th>Reputation</th>
     {% for user in users %}
         <tr>
-            <td><a href="/users/{{ user.id }}">{{ user.name }}</a></td> #<<<<<<< validalas szukseges
+            <td>{{ user.id }}</td>
+            <td><a href="/user/{{ user.id }}">{{ user.name }}</a></td>
             <td>{{ user.registration_date }}</td>
             <td>{{ user.question_number }}</td>
             <td>{{ user.answer_number }}</td>
