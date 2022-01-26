@@ -31,6 +31,7 @@ def registration():
     return render_template('registration.html', new_user=True)
 
 
+# ilyen user már van
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == "POST":
@@ -76,6 +77,12 @@ def list_page():
         data = data_manager.get_questions('submission_time', 'DESC')
         headers = data_manager.get_question_headers()
         return render_template('list.html', questions=data, headers=headers,logged_in=True)
+    if request.args:
+        order = request.args['order-by']
+        direction = request.args['direction']
+        data = data_manager.get_questions(order, direction)
+        headers = data_manager.get_question_headers()
+        return render_template('list.html', questions=data, headers=headers, logged_in=False)
     data = data_manager.get_questions('submission_time', 'DESC')
     headers = data_manager.get_question_headers()
     return render_template('list.html', questions=data, headers=headers, logged_in=False)
@@ -195,16 +202,17 @@ def add_comment_to_answer(answer_id):
             return redirect(url_for("display_question", id=question_id))
         comment = {'title': '', 'message': ''}
         return render_template("comment.html", visible_data=comment, route=f"/answer/{answer_id}/new-comment")
-    return  redirect(url_for("main_page"))
+    return redirect(url_for("main_page"))
 
 
-
+# erre is session
 @app.route('/question/<id>/delete', methods=["GET"])
 def delete_question(id):
     data_manager.delete_question_by_id(id)
     return redirect("/list")
 
 
+# erre is
 @app.route('/question/<question_id>/edit', methods=["POST", "GET"])
 def edit_question(question_id):
     if request.method == "POST":
@@ -217,6 +225,7 @@ def edit_question(question_id):
     return render_template("edit_question.html", question=question, q_id=question_id)
 
 
+# erre is
 @app.route('/answer/<answer_id>/edit', methods=["POST", "GET"])
 def edit_answer(answer_id):
     if request.method == "POST":
@@ -229,12 +238,14 @@ def edit_answer(answer_id):
     return render_template("edit_answer.html", answer=answer, a_id=answer_id)
 
 
+# erre is
 @app.route('/answer/<answer_id>/delete', methods=["POST", "GET"])
 def delete_answer(answer_id):
     return_question_id = data_manager.delete_answer_by_id(answer_id)
     return redirect("/question/" + str(return_question_id['question_id']))
 
 
+# erre is
 @app.route('/comment/<id>/<comment_id>/delete', methods=["POST", "GET"])
 def delete_comment(id, comment_id):
     data_manager.delete_comment_by_id(comment_id)
@@ -272,6 +283,7 @@ def vote_down_answer(id):
     data_manager.change_vote_by_id(["answer", id, change, "id"])
     return redirect(url_for("display_question", id=question_id))
 
+
 # erre rá kell nézni
 @app.route('/question/pics/<link>')
 def giv_pics_to_question(link):
@@ -281,6 +293,7 @@ def giv_pics_to_question(link):
     connection.write_data(connection.DATA_FILE_PATH_QUESTION, question_with_pics, header)
     default_sort_data = data_manager.sort(data)
     return render_template('ask_mate_1/list.html', questions=default_sort_data)
+
 
 # erre is
 @app.route('/answer/pics/<link>')
@@ -293,6 +306,7 @@ def giv_pics_to_answer(link):
     return render_template('ask_mate_1/list.html', questions=default_sort_data)
 
 
+# erre is
 @app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
 def edit_comment(comment_id):
     if request.method == "POST":
@@ -323,6 +337,7 @@ def give_tag(question_id):
     else:
         tags_for_listing = data_manager.all_tag()
         return render_template("adding_tag.html", question_id=question_id, tags=tags_for_listing)
+
 
 @app.route('/question/<question_id>/select-tag')
 def give_tag_with_select(question_id):
