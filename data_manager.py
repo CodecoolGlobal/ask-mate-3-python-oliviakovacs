@@ -14,7 +14,7 @@ def get_questions(cursor, order="submission_time", direction="DESC"):
 @connection.connection_handler
 def get_question_by_id(cursor, id):
     query = '''
-        SELECT title, message, vote_number, view_number, id
+        SELECT title, message, vote_number, view_number, id, user_id
         FROM question
         WHERE id = %(q)s
         '''
@@ -37,7 +37,7 @@ def get_answers_by_question_id(cursor, id):
 @connection.connection_handler
 def get_question_comment_by_question_id(cursor, id):
     query = '''
-            SELECT id, message, submission_time, edited_count
+            SELECT id, message, submission_time, edited_count, user_id
             FROM comment
             WHERE question_id = %(q)s
             '''
@@ -373,4 +373,5 @@ def get_user_id_by_username(cursor, username):
     WHERE name =%(username)s"""
     cursor.execute(query, {'username': username })
     return cursor.fetchone()
+
 

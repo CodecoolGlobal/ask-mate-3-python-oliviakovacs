@@ -6,14 +6,14 @@
     <div>
         {%  for data in question %}
         <h2> {{ data.title }} </h2>
-            {% if logged_in %}<div> <a href="/question/{{ data.id }}/edit">Edit question</a></div>{% endif %}
+            {% if data.user_id == same_user %}<div> <a href="/question/{{ data.id }}/edit">Edit question</a></div>{% endif %}
         <h3> {{ data.message }} </h3>
             <p>
                 <span>Like Question :</span> <span> {{ question.vote_number }}</span>
                 <a href="/question/{{ id }}/vote_up">↑</a>
                 <a href="/question/{{ id }}/vote_down">↓</a>
             </p>
-        {% if logged_in %}
+        {% if question.user_id == same_user %}
             <form action="/question/{{ data.id }}/delete">
             <input type="submit" value="Delete Question" /><br><br>
         </form>
@@ -25,13 +25,13 @@
                     <td>{{ q_comment.message }}</td>
                     <td>{{ q_comment.submission_time }}</td>
                     <td>Edited {{ q_comment.edited_count }} times.</td>
-                    <td>{% if logged_in %}<form action="/comment/{{q_comment.id}}/edit">
+                    <td>{% if q_comment.user_id == same_user %}<form action="/comment/{{q_comment.id}}/edit">
                         <input type="submit" value="Edit Comment"><br><br></form>{% endif %}</td>
                     <td>
 {#                        {% if logged_in %}<form action="/comment/{{ data.id }}/{{ q_comment.id }}/delete">#}
 {#                            <input type="submit" value="Delete Comment" /><br><br>#}
 {#                        </form>{% endif %}#}
-                        {% if logged_in %}<button type="submit">
+                        {% if q_comment.user_id == same_user %}<button type="submit">
                             <a href="/comment/{{ data.id }}/{{ q_comment.id }}/delete" onclick="return confirm('Are you sure?')">🗑</a></button>{% endif %}
                     </td>
                 </tr>
@@ -56,13 +56,10 @@
                     <td>{{ a_comment.message }}</td>
                     <td>{{ a_comment.submission_time }}</td>
                     <td>Edited {{ a_comment.edited_count }} times.</td>
-                    <td>{% if logged_in %}<form action="/comment/{{a_comment.id}}/edit">
+                    <td>{% if a_comment.user_id == same_user %}<form action="/comment/{{a_comment.id}}/edit">
                         <input type="submit" value="Edit Comment"><br><br></form>{% endif %}</td>
                     <td>
-                        {% if logged_in %}<form action="/comment/{{ answer.question_id }}/{{ a_comment.id }}/delete">
-                           <input type="submit" value="Delete Comment" /><br><br>
-                       </form>{% endif %}
-                        {% if logged_in %}<button type="submit">
+                        {% if a_comment.user_id == same_user %}<button type="submit">
                         <a href="/comment/{{ answer.question_id }}/{{ a_comment.id }}/delete" onclick="return confirm('Are you sure?')">🗑</a>
                         </button>{% endif %}
                     </td>
@@ -75,14 +72,14 @@
                         {% if answer.image %}
                         <img src="/static/{{ answer.image }}">
                         {% endif %}
-                        {% if logged_in %}<form action="/answer/{{ answer.id }}/edit">
+                        {% if answer.user_id == same_user %}<form action="/answer/{{ answer.id }}/edit">
                             <input type="submit" value="Edit Answer" />
                         </form>{% endif %}
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        {% if logged_in %}<form action="/answer/{{ answer.id }}/delete">
+                        {% if answer.user_id == same_user %}<form action="/answer/{{ answer.id }}/delete">
                             <input type="submit" value="Delete Answer" />
                         </form>{% endif %}
                     </td>

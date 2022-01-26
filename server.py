@@ -107,13 +107,19 @@ def display_question(id):
         question_comments = data_manager.get_question_comment_by_question_id(id)
         answers_comments = data_manager.get_answer_comment_by_question_id(id)
         tags = data_manager.tags_by_question_id(id)
-        return render_template("question_by_id.html", question=question, answers=answers, question_comments=question_comments, answers_comments=answers_comments, id=id, tags=tags, logged_in=True)
+        user = data_manager.get_user_id_by_username(session["user"])
+        user_id = user["id"]
+        return render_template("question_by_id.html", question=question, answers=answers,\
+                               question_comments=question_comments,\
+                               answers_comments=answers_comments, id=id, tags=tags, logged_in=True, same_user=user_id)
     question = data_manager.get_question_by_id(id)
     answers = data_manager.get_answers_by_question_id(id)
     question_comments = data_manager.get_question_comment_by_question_id(id)
     answers_comments = data_manager.get_answer_comment_by_question_id(id)
     tags = data_manager.tags_by_question_id(id)
-    return render_template("question_by_id.html", question=question, answers=answers, question_comments=question_comments, answers_comments=answers_comments, id=id, tags=tags, logged_in=False)
+    not_existent_user_id = -1
+    return render_template("question_by_id.html", question=question, answers=answers, question_comments=question_comments,\
+                           answers_comments=answers_comments, id=id, tags=tags, logged_in=False, user_id=not_existent_user_id)
 
 
 @app.route("/add-question", methods=["POST", "GET"])
@@ -205,10 +211,17 @@ def add_comment_to_answer(answer_id):
     return redirect(url_for("main_page"))
 
 
-# erre is session
 @app.route('/question/<id>/delete', methods=["GET"])
 def delete_question(id):
-    data_manager.delete_question_by_id(id)
+    question = data_manager.get_question_by_id(id)
+    if "user" in session:
+        user = session["user"]
+        question_user = data_manager.get_user_id_by_username(user)
+        user_id = question_user["id"]
+        for data in question:
+            q_user_id = data["user_id"]
+        if int(user_id) == int(q_user_id):
+            data_manager.delete_question_by_id(id)
     return redirect("/list")
 
 
