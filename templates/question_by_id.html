@@ -13,11 +13,13 @@
                 <a href="/question/{{ id }}/vote_up">↑</a>
                 <a href="/question/{{ id }}/vote_down">↓</a>
             </p>
-        {% if question.user_id == same_user %}
+            {% for content in question %}
+        {% if content.user_id == same_user %}
             <form action="/question/{{ data.id }}/delete">
             <input type="submit" value="Delete Question" /><br><br>
         </form>
             {% endif %}
+            {% endfor %}
         {% if logged_in %}<div><a href="/question/{{ id }}/new-comment">Add New Comment</a></div>{% endif %}
             <table>
                 {% for q_comment in question_comments %}
