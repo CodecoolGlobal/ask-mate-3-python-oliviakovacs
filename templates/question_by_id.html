@@ -13,11 +13,13 @@
                 <a href="/question/{{ id }}/vote_up">↑</a>
                 <a href="/question/{{ id }}/vote_down">↓</a>
             </p>
-        {% if question.user_id == same_user %}
+            {% for content in question %}
+        {% if content.user_id == same_user %}
             <form action="/question/{{ data.id }}/delete">
             <input type="submit" value="Delete Question" /><br><br>
         </form>
             {% endif %}
+            {% endfor %}
         {% if logged_in %}<div><a href="/question/{{ id }}/new-comment">Add New Comment</a></div>{% endif %}
             <table>
                 {% for q_comment in question_comments %}
@@ -32,7 +34,7 @@
 {#                            <input type="submit" value="Delete Comment" /><br><br>#}
 {#                        </form>{% endif %}#}
                         {% if q_comment.user_id == same_user %}<button type="submit">
-                            <a href="/comment/{{ data.id }}/{{ q_comment.id }}/delete" onclick="return confirm('Are you sure?')">🗑</a></button>{% endif %}
+                            <a href="/comment/{{ q_comment.id }}/delete" onclick="return confirm('Are you sure?')">🗑</a></button>{% endif %}
                     </td>
                 </tr>
 
@@ -47,8 +49,14 @@
             {% for answer in answers %}
 {#                <li> <a href="/question/{{ question.id }}">{{ data.answer.message }}</a></li>#}
                 <tr>
-                    <td>{{ answer.message }}</td>
+                    <td>{% if answer.accepted == '1' %}👑 {% endif %}{{ answer.message }}</td>
                     <td>{{ answer.vote_number }} <a href="/answer/{{ answer.id }}/vote_up">↑</a> <a href="/answer/{{ answer.id }}/vote_down">↓</a></td>
+                            {% if authority %}
+                                {% if answer.accepted == "1" %}
+                                    <td><a href="/{{ answer.id }}/{{answer.user_id}}/{{ id }}/unaccepted" onclick="return confirm('It is a Uncool answer?')">👎</a></td>
+                                    {% else %}<td><a href="/{{ answer.id }}/{{answer.user_id}}/{{ id }}/accepted" onclick="return confirm('It was a COOL answer?')">👑</a></td>
+                                {% endif %}
+                            {% endif %}
                 </tr>
                 {% for a_comment in answers_comments %}
                     {% if answer.id == a_comment.answer_id %}
