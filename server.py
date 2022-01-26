@@ -111,71 +111,91 @@ def display_question(id):
 
 @app.route("/add-question", methods=["POST", "GET"])
 def add_question():
-    if request.method == "POST":
-        max_id = data_manager.get_question_ids()
-        now = datetime.datetime.now()
-        new_question=[]
-        new_question.append(max_id[0]['maximum'])
-        new_question.append(now)
-        new_question.append(0)
-        new_question.append(0)
-        new_question.append(request.form.get("title"))
-        new_question.append(request.form.get("message"))
-        new_question.append(request.form.get("image"))
-        data_manager.add_new_question(new_question)
-        return redirect('/list')
+    if "user" in session:
+        if request.method == "POST":
+            max_id = data_manager.get_question_ids()
+            now = datetime.datetime.now()
+            new_question=[]
+            new_question.append(max_id[0]['maximum'])
+            new_question.append(now)
+            new_question.append(0)
+            new_question.append(0)
+            new_question.append(request.form.get("title"))
+            new_question.append(request.form.get("message"))
+            new_question.append(request.form.get("image"))
+            user = session["user"]
+            user_id = data_manager.get_user_id_by_username(user)
+            new_question.append(user_id["id"])
+            data_manager.add_new_question(new_question)
+            return redirect('/list')
 
-    question = {'title': '', 'message': ''}
-    return render_template("form.html", visible_data=question, route="/add-question", is_question=True)
+        question = {'title': '', 'message': ''}
+        return render_template("form.html", visible_data=question, route="/add-question", is_question=True)
+    return redirect(url_for("main_page"))
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
 def add_answer(question_id):
-    if request.method == "POST":
-        max_id = data_manager.get_question_ids()
-        max_answer_id = data_manager.get_answer_ids()
-        now = datetime.datetime.now()
-        new_answer = []
-        new_answer.append(max_answer_id[0]['maximum'])
-        new_answer.append(now)
-        new_answer.append(0)
-        new_answer.append(question_id)
-        new_answer.append(request.form.get("message"))
-        new_answer.append(request.form.get("image"))
-        data_manager.add_new_answer(new_answer)
-        return redirect(f"/question/{question_id}")
-    question = {'title': '', 'message': ''}
-    return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False)
+    if "user" in session:
+        if request.method == "POST":
+            max_id = data_manager.get_question_ids()
+            max_answer_id = data_manager.get_answer_ids()
+            now = datetime.datetime.now()
+            new_answer = []
+            new_answer.append(max_answer_id[0]['maximum'])
+            new_answer.append(now)
+            new_answer.append(0)
+            new_answer.append(question_id)
+            new_answer.append(request.form.get("message"))
+            new_answer.append(request.form.get("image"))
+            user = session["user"]
+            user_id = data_manager.get_user_id_by_username(user)
+            new_answer.append(user_id["id"])
+            data_manager.add_new_answer(new_answer)
+            return redirect(f"/question/{question_id}")
+        question = {'title': '', 'message': ''}
+        return render_template("form.html", visible_data=question, route=f"/question/{question_id}/new-answer", is_question=False)
+    return redirect(url_for("main_page"))
 
 
 @app.route('/question/<question_id>/new-comment', methods=["POST", "GET"])
 def add_comment_to_question(question_id):
-    if request.method == "POST":
-        now = datetime.datetime.now()
-        new_comment = []
-        new_comment.append(now)
-        new_comment.append(question_id)
-        new_comment.append(request.form.get("message"))
-        data_manager.add_new_comment_to_question(new_comment)
-        return redirect(url_for("display_question", id=question_id))
-    comment = {'title': '', 'message': ''}
-    return render_template("comment.html", visible_data=comment, route=f"/question/{question_id}/new-comment")
+    if "user" in session:
+        if request.method == "POST":
+            now = datetime.datetime.now()
+            new_comment = []
+            new_comment.append(now)
+            new_comment.append(question_id)
+            new_comment.append(request.form.get("message"))
+            user = session["user"]
+            user_id = data_manager.get_user_id_by_username(user)
+            new_comment.append(user_id["id"])
+            data_manager.add_new_comment_to_question(new_comment)
+            return redirect(url_for("display_question", id=question_id))
+        comment = {'title': '', 'message': ''}
+        return render_template("comment.html", visible_data=comment, route=f"/question/{question_id}/new-comment")
+    return redirect(url_for("main_page"))
 
 
 @app.route('/answer/<answer_id>/new-comment', methods=["POST", "GET"])
 def add_comment_to_answer(answer_id):
-    if request.method == "POST":
-        question_id = data_manager.get_question_id_by_answer(answer_id)
-        question_id = question_id['question_id']
-        now = datetime.datetime.now()
-        new_comment = []
-        new_comment.append(now)
-        new_comment.append(answer_id)
-        new_comment.append(request.form.get("message"))
-        data_manager.add_new_comment_to_answer(new_comment)
-        return redirect(url_for("display_question", id=question_id))
-    comment = {'title': '', 'message': ''}
-    return render_template("comment.html", visible_data=comment, route=f"/answer/{answer_id}/new-comment")
+    if "user" in session:
+        if request.method == "POST":
+            question_id = data_manager.get_question_id_by_answer(answer_id)
+            question_id = question_id['question_id']
+            now = datetime.datetime.now()
+            new_comment = []
+            new_comment.append(now)
+            new_comment.append(answer_id)
+            new_comment.append(request.form.get("message"))
+            user = session["user"]
+            user_id = data_manager.get_user_id_by_username(user)
+            new_comment.append(user_id["id"])
+            data_manager.add_new_comment_to_answer(new_comment)
+            return redirect(url_for("display_question", id=question_id))
+        comment = {'title': '', 'message': ''}
+        return render_template("comment.html", visible_data=comment, route=f"/answer/{answer_id}/new-comment")
+    return  redirect(url_for("main_page"))
 
 
 
