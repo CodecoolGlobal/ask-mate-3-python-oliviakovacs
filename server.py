@@ -51,6 +51,7 @@ def login():
     return render_template("login.html", valid_login=True)
 
 
+
 @app.route("/", methods=['GET', 'POST'])
 def main_page():
     if request.method == 'POST':
@@ -101,6 +102,13 @@ def display_search_result():
 
 @app.route("/question/<id>")
 def display_question(id):
+    authority = False
+    user_id = ""
+    if 'user' in session:
+        user_id = data_manager.get_user_id_by_name(session['user'])["id"]
+        he_made_the_question_id = data_manager.get_user_id_by_question_id(id)
+        if user_id == he_made_the_question_id["user_id"]:
+            authority = True
     if "user" in session:
         question = data_manager.get_question_by_id(id)
         answers = data_manager.get_answers_by_question_id(id)
@@ -111,7 +119,8 @@ def display_question(id):
         user_id = user["id"]
         return render_template("question_by_id.html", question=question, answers=answers,\
                                question_comments=question_comments,\
-                               answers_comments=answers_comments, id=id, tags=tags, logged_in=True, same_user=user_id)
+                               answers_comments=answers_comments, id=id, tags=tags, logged_in=True, same_user=user_id, authority=authority)
+
     question = data_manager.get_question_by_id(id)
     answers = data_manager.get_answers_by_question_id(id)
     question_comments = data_manager.get_question_comment_by_question_id(id)
@@ -119,7 +128,7 @@ def display_question(id):
     tags = data_manager.tags_by_question_id(id)
     not_existent_user_id = -1
     return render_template("question_by_id.html", question=question, answers=answers, question_comments=question_comments,\
-                           answers_comments=answers_comments, id=id, tags=tags, logged_in=False, user_id=not_existent_user_id)
+                           answers_comments=answers_comments, id=id, tags=tags, logged_in=False, user_id=not_existent_user_id, authority=authority)
 
 
 @app.route("/add-question", methods=["POST", "GET"])
@@ -259,16 +268,25 @@ def delete_answer(answer_id):
 
 
 # erre is
-@app.route('/comment/<id>/<comment_id>/delete', methods=["POST", "GET"])
-def delete_comment(id, comment_id):
-    data_manager.delete_comment_by_id(comment_id)
-    return redirect(url_for("display_question", id=id))
+@app.route('/comment/<comment_id>/delete', methods=["POST", "GET"])
+def delete_comment(comment_id):
+    comment = data_manager.delete_comment_by_id(comment_id)
+    question_id = comment['question_id']
+    answer_id = comment['answer_id']
+    if question_id:
+        return redirect(url_for("display_question", id=question_id))
+    else:
+        question_id = data_manager.get_question_id_by_answer(answer_id)
+        question_id = question_id['question_id']
+        return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/question/<question_id>/vote_up')
 def vote_up_question(question_id):
     change = 1
     data_manager.change_vote_by_id(["question", question_id,  change, "id"])
+    user_id = data_manager.get_user_id_by_question_id(question_id)
+    data_manager.change_reputation_up(user_id["user_id"], 5)
     return redirect(url_for("display_question", id=question_id))
 
 
@@ -276,6 +294,8 @@ def vote_up_question(question_id):
 def vote_down_question(question_id):
     change = -1
     data_manager.change_vote_by_id(["question", question_id,  change, "id"])
+    user_id = data_manager.get_user_id_by_question_id(int(question_id))
+    data_manager.reputation_minus_two(user_id["user_id"])
     return redirect(url_for("display_question", id=question_id))
 
 
@@ -285,6 +305,8 @@ def vote_up_answer(id):
     question_id = data_manager.get_question_id_by_answer(id)
     question_id = question_id['question_id']
     data_manager.change_vote_by_id(["answer", id, change, "id"])
+    user_id = data_manager.get_user_id_by_answer_id(id)
+    data_manager.change_reputation_up(user_id["user_id"], 10)
     return redirect(url_for("display_question", id=question_id))
 
 
@@ -294,6 +316,8 @@ def vote_down_answer(id):
     question_id = data_manager.get_question_id_by_answer(id)
     question_id = question_id['question_id']
     data_manager.change_vote_by_id(["answer", id, change, "id"])
+    user_id = data_manager.get_user_id_by_answer_id(id)
+    data_manager.reputation_minus_two(user_id["user_id"])
     return redirect(url_for("display_question", id=question_id))
 
 
@@ -327,7 +351,14 @@ def edit_comment(comment_id):
         message = request.form["comment_message"]
         comment = data_manager.edit_comment(comment_id, message, now)
         question_id = comment['question_id']
-        return redirect(url_for("display_question", id=question_id))
+        answer_id = comment['answer_id']
+        if question_id:
+            return redirect(url_for("display_question", id=question_id))
+        else:
+            question_id = data_manager.get_question_id_by_answer(answer_id)
+            question_id = question_id['question_id']
+            return redirect(url_for("display_question", id=question_id))
+
     comment = data_manager.get_comment_by_id(comment_id)
     return render_template("edit_comment.html", comment=comment, c_id=comment_id)
 
@@ -367,6 +398,20 @@ def give_tag_with_select(question_id):
 def delete_tag_from_question(question_id, tag_id):
     data_manager.delete_tag_from_question(question_id, tag_id)
     return redirect(url_for("display_question", id=question_id))
+
+
+@app.route("/<answer_id>/<answer_user_id>/<id>/accepted")
+def answer_accepted(answer_id, answer_user_id, id):
+    data_manager.accepted_answer(answer_id, 1)
+    data_manager.plus_15(answer_user_id)
+    return redirect(url_for("display_question", id=id))
+
+
+@app.route("/<answer_id>/<answer_user_id>/<id>/unaccepted")
+def answer_un_accepted(answer_id, answer_user_id, id):
+    data_manager.accepted_answer(answer_id, 0)
+    data_manager.minus_15(answer_user_id)
+    return redirect(url_for("display_question", id=id))
 
 
 @app.route('/users')
