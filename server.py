@@ -268,10 +268,17 @@ def delete_answer(answer_id):
 
 
 # erre is
-@app.route('/comment/<id>/<comment_id>/delete', methods=["POST", "GET"])
-def delete_comment(id, comment_id):
-    data_manager.delete_comment_by_id(comment_id)
-    return redirect(url_for("display_question", id=id))
+@app.route('/comment/<comment_id>/delete', methods=["POST", "GET"])
+def delete_comment(comment_id):
+    comment = data_manager.delete_comment_by_id(comment_id)
+    question_id = comment['question_id']
+    answer_id = comment['answer_id']
+    if question_id:
+        return redirect(url_for("display_question", id=question_id))
+    else:
+        question_id = data_manager.get_question_id_by_answer(answer_id)
+        question_id = question_id['question_id']
+        return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/question/<question_id>/vote_up')

@@ -32,7 +32,7 @@
 {#                            <input type="submit" value="Delete Comment" /><br><br>#}
 {#                        </form>{% endif %}#}
                         {% if q_comment.user_id == same_user %}<button type="submit">
-                            <a href="/comment/{{ data.id }}/{{ q_comment.id }}/delete" onclick="return confirm('Are you sure?')">🗑</a></button>{% endif %}
+                            <a href="/comment/{{ q_comment.id }}/delete" onclick="return confirm('Are you sure?')">🗑</a></button>{% endif %}
                     </td>
                 </tr>
 

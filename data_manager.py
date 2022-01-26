@@ -169,8 +169,10 @@ def delete_comment_by_id(cursor, comment_id):
     query = """
         DELETE
         FROM comment
-        WHERE id = %(c_id)s"""
+        WHERE id = %(c_id)s
+        RETURNING question_id, answer_id"""
     cursor.execute(query, {'c_id': comment_id})
+    return cursor.fetchone()
 
 
 @connection.connection_handler
