@@ -345,25 +345,94 @@ def get_comment_by_id(cursor, id):
     cursor.execute(query, {'c_id': id})
     return cursor.fetchall()
 
+
 @connection.connection_handler
-def reputation_counter(cursor, id):
-    query='''
-    SELECT (COUNT(answer.vote_number)*10)+(COUNT(accepted)*15)+(COUNT(question.vote_number)*5) AS reputation
-    FROM answer
-    FULL JOIN question
-    ON question.user_id=answer.user_id
-    WHERE answer.user_id = %(id)s OR question.user_id = %(id)s
-    '''
+def reputation_minus_two(cursor, id):
+    query = """
+    UPDATE "user"
+    SET reputation = reputation -2
+    WHERE id = %(id)s
+    """
     cursor.execute(query, {'id': id})
-    return cursor.fetchone()
-
 
 @connection.connection_handler
-def add_user(cursor,username, password, now):
+def add_user(cursor, username, password, now):
     query = """
            INSERT INTO "user" (name, user_password, registration_date, reputation)
            VALUES (%(name)s, %(password)s, %(reg_date)s, %(rep_num)s);
         """
     cursor.execute(query, {'name': username, 'password': password, 'reg_date': now, 'rep_num': 0})
 
+
+@connection.connection_handler
+def get_user_id_by_name(cursor,username):
+    query = '''
+    SELECT id
+    FROM "user"
+    WHERE name = %(user_name)s
+    '''
+    cursor.execute(query, {'name': username})
+    return cursor.fetchone()
+
+
+@connection.connection_handler
+def get_user_id_by_question_id(cursor,question_id):
+    query = '''
+    SELECT user_id
+    FROM question
+    WHERE id = %(question_id)s
+    '''
+    cursor.execute(query, {'question_id': question_id})
+    return cursor.fetchone()
+
+
+@connection.connection_handler
+def get_user_id_by_answer_id(cursor, answer_id):
+    query = '''
+        SELECT user_id
+        FROM answer
+        WHERE id =  CAST(%(answer_id)s AS int)
+        '''
+    cursor.execute(query, {'answer_id': answer_id})
+    return cursor.fetchone()
+
+
+@connection.connection_handler
+def accepted_answer(cursor, answer_id,true_or_false):
+    query = '''
+    UPDATE answer
+    SET accepted = CAST(%(true_or_false)s AS bit)
+    WHERE answer.id = %(answer_id)s;
+    '''
+    cursor.execute(query, {'answer_id': answer_id, 'true_or_false': true_or_false})
+
+
+@connection.connection_handler
+def plus_15(cursor, user_id):
+    query = '''
+       UPDATE "user"
+       SET reputation = reputation +15
+       WHERE id = %(user_id)s
+       '''
+    cursor.execute(query, {'user_id': user_id})
+
+
+@connection.connection_handler
+def minus_15(cursor, user_id):
+    query = '''
+       UPDATE "user"
+       SET reputation = reputation -15
+       WHERE id = %(user_id)s
+       '''
+    cursor.execute(query, {'user_id': user_id})
+
+
+@connection.connection_handler
+def change_reputation_up(cursor, received_id, num):
+    query = f"""
+        UPDATE "user"
+        SET reputation = reputation+%(num)s
+        WHERE id= %(received_id)s;
+        """
+    cursor.execute(query, {"received_id": received_id, "num": num})
 
