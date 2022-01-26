@@ -252,7 +252,7 @@ def vote_down_answer(id):
     data_manager.change_vote_by_id(["answer", id, change, "id"])
     return redirect(url_for("display_question", id=question_id))
 
-
+# erre rá kell nézni
 @app.route('/question/pics/<link>')
 def giv_pics_to_question(link):
     header = connection.DATA_HEADER_QUESTION
@@ -262,7 +262,7 @@ def giv_pics_to_question(link):
     default_sort_data = data_manager.sort(data)
     return render_template('ask_mate_1/list.html', questions=default_sort_data)
 
-
+# erre is
 @app.route('/answer/pics/<link>')
 def giv_pics_to_answer(link):
     header = connection.DATA_HEADER_ANSWER
