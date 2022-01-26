@@ -378,6 +378,13 @@ def users_page():
         return redirect('/login')
 
 
+@app.route("/tags", methods=['GET'])
+def tags():
+    all_tags = data_manager.get_tags()
+    print(all_tags)
+    return render_template("tags.html", all_tags=all_tags)
+
+
 if __name__ == "__main__":
     app.run(
         host='0.0.0.0',

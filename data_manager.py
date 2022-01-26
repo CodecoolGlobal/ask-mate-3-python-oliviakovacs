@@ -386,3 +386,17 @@ def get_user_list(cursor):
         GROUP BY u.id, u.name, u.registration_date, u.reputation"""
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_tags(cursor):
+    query = """
+        SELECT tag.name, COUNT(question_tag.tag_id) as number_of_questions
+        FROM tag
+        LEFT JOIN question_tag
+        ON tag.id = question_tag.tag_id
+        GROUP BY tag.name
+        ORDER BY number_of_questions DESC;
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
