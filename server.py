@@ -358,8 +358,11 @@ def delete_tag_from_question(question_id, tag_id):
 
 @app.route('/users')
 def users_page():
-    users = data_manager.get_user_list()
-    return render_template('users.html', users=users)
+    if "user" in session:
+        users = data_manager.get_user_list()
+        return render_template('users.html', users=users)
+    else:
+        return redirect('/login')
 
 
 if __name__ == "__main__":
