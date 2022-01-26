@@ -341,6 +341,12 @@ def delete_tag_from_question(question_id, tag_id):
     return redirect(url_for("display_question", id=question_id))
 
 
+@app.route('/users')
+def users_page():
+    users = data_manager.get_user_list()
+    return render_template('users.html', users=users)
+
+
 if __name__ == "__main__":
     app.run(
         host='0.0.0.0',
