@@ -327,7 +327,14 @@ def edit_comment(comment_id):
         message = request.form["comment_message"]
         comment = data_manager.edit_comment(comment_id, message, now)
         question_id = comment['question_id']
-        return redirect(url_for("display_question", id=question_id))
+        answer_id = comment['answer_id']
+        if question_id:
+            return redirect(url_for("display_question", id=question_id))
+        else:
+            question_id = data_manager.get_question_id_by_answer(answer_id)
+            question_id = question_id['question_id']
+            return redirect(url_for("display_question", id=question_id))
+
     comment = data_manager.get_comment_by_id(comment_id)
     return render_template("edit_comment.html", comment=comment, c_id=comment_id)
 

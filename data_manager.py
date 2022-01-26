@@ -329,7 +329,7 @@ def edit_comment(cursor, id, comment_message, now):
         UPDATE comment
         SET message = %(c_m)s, submission_time = %(c_now)s, edited_count = edited_count + 1
         WHERE id = %(c_id)s
-        RETURNING question_id
+        RETURNING question_id, answer_id
         """
     cursor.execute(query, {'c_id': id, 'c_m': comment_message, 'c_now': now})
     return cursor.fetchone()
@@ -378,7 +378,7 @@ def get_user_id_by_username(cursor, username):
 @connection.connection_handler
 def get_user_list(cursor):
     query = """
-        SELECT u.id AS id, u.name AS name, u.registration_date AS registration_date, COUNT(a) AS answer_number, COUNT(c) AS comment_number, reputation
+        SELECT u.id AS id, u.name AS name, u.registration_date AS registration_date, COUNT(q) AS question_number ,COUNT(a) AS answer_number, COUNT(c) AS comment_number, reputation
         FROM "user" u
         LEFT JOIN question q ON u.id = q.id
         LEFT JOIN answer a ON u.id = a.user_id
