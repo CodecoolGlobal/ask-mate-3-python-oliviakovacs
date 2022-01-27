@@ -46,8 +46,8 @@ def main():
 def registration():
     if request.method == "POST":
         username = request.form['username']
-        all_user_names = data_manager.get_user_names()
-        if username in all_user_names:
+        is_exists = data_manager.get_users(username)
+        if is_exists["exists"] == True:
             return render_template('registration.html', new_user=False)
         password = request.form['password']
         hash_password = security.hash_password(password)

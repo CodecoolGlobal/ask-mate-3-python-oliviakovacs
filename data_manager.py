@@ -540,31 +540,12 @@ def get_comments_by_user_id(cursor, user_id):
     return cursor.fetchall()
 
 
-@connection.connection_handler
-def write_bonus_question(cursor, headers, content):
+def get_users(cursor, username):
     query = """
-    INSERT INTO bonus (%s)
-    VALUES (%s)"""
-    cursor.execute(query, headers, content)
+        SELECT EXISTS(SELECT name AS exists FROM "user" WHERE name = %(username)s)
+    """
+    cursor.execute(query, {'username': username})
+    return cursor.fetchone()
 
-
-# @connection.connection_handler
-# def drop_table(cursor):
-#     query = """
-#     DROP TABLE IF EXISTS public.bonus
-#     """
-#     cursor.execute(query)
-
-
-@connection.connection_handler
-def create_table(cursor, headers):
-    query = """
-    CREATE TABLE bonus
-    (id integer,
-    title text,
-    view_number integer,
-    vote_number integer,
-    description text)"""
-    cursor.execute(query)
 
 
