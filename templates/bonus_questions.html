@@ -12,7 +12,6 @@
     <body>
         <h1>AskMate</h1>
         <h2>All Questions:</h2>
-        <form method="post" action="/bonus-questions">
         <button id="theme-button">Change Theme to Dark</button>
         <button id="increase-font-button">Increase page font</button>
         <button id="decrease-font-button">Decrease page font</button>
@@ -20,10 +19,7 @@
                 style="width: 500px" id="doNotModifyThisId_QuestionsFilter"
                 type="text"
                 placeholder="filter questions by keywords">
-            <label for="search">Filter</label>
-            <input name="search" type="text" style="width: 500px">
-        <button type="submit">Go</button>
-        </form>
+        <div class="every_text_on_page">
         <table>
             <thead id="doNotModifyThisId_QuestionsTableHeader">
                 <tr>
@@ -44,6 +40,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>
     </body>
 {#</html>#}
 

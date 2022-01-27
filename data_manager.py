@@ -382,7 +382,18 @@ def get_user_id_by_name(cursor,username):
 
 
 @connection.connection_handler
-def get_user_id_by_question_id(cursor,question_id):
+def get_username_by_id(cursor, id):
+    query = '''
+    SELECT name
+    FROM "user"
+    WHERE id = %(id)s;
+    '''
+    cursor.execute(query, {"id": id})
+    return cursor.fetchone()
+
+
+@connection.connection_handler
+def get_user_id_by_question_id(cursor, question_id):
     query = '''
     SELECT user_id
     FROM question
@@ -466,12 +477,13 @@ def get_user_id_by_username(cursor, username):
 @connection.connection_handler
 def get_user_list(cursor):
     query = """
-        SELECT u.id AS id, u.name AS name, u.registration_date AS registration_date, COUNT(q) AS question_number ,COUNT(a) AS answer_number, COUNT(c) AS comment_number, reputation
+        SELECT u.id AS id, u.name AS name, u.registration_date AS registration_date, COUNT(a) AS answer_number, COUNT(c) AS comment_number, COUNT(q) AS question_number, reputation
         FROM "user" u
         LEFT JOIN question q ON u.id = q.id
         LEFT JOIN answer a ON u.id = a.user_id
         LEFT JOIN comment c ON u.id = c.user_id
-        GROUP BY u.id, u.name, u.registration_date, u.reputation"""
+        GROUP BY u.id, u.name, u.registration_date, u.reputation
+        ORDER BY u.id"""
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -491,11 +503,47 @@ def get_tags(cursor):
 
 
 @connection.connection_handler
+def get_questions_by_user_id(cursor, user_id):
+    query = """
+        SELECT title, id
+        FROM question
+        WHERE user_id = %(user_id)s
+        ORDER BY submission_time
+    """
+    cursor.execute(query, {"user_id": user_id})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_answers_by_user_id(cursor, user_id):
+    query = """
+            SELECT message, question_id
+            FROM answer
+            WHERE user_id = %(user_id)s
+            ORDER BY submission_time
+        """
+    cursor.execute(query, {"user_id": user_id})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_comments_by_user_id(cursor, user_id):
+    query = """
+            SELECT message, question_id, answer_id
+            FROM comment
+            WHERE user_id = %(user_id)s
+            ORDER BY submission_time
+        """
+    cursor.execute(query, {"user_id": user_id})
+    return cursor.fetchall()
+
+
 def get_users(cursor, username):
     query = """
         SELECT EXISTS(SELECT name AS exists FROM "user" WHERE name = %(username)s)
     """
     cursor.execute(query, {'username': username})
     return cursor.fetchone()
+
 
 

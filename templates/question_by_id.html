@@ -104,7 +104,7 @@
     {% if logged_in %}<div> <a href="/question/{{ id }}/new-answer">Add New Answer</a></div>{% endif %}
     {% if logged_in %}<div> <a href="/question/{{ id }}/new-tag">Add New Tag</a></div>{% endif %}
     {% for tag in tags %}
-        <a href="url">{{ tag.name }}</a>
+        <a href="/tags">{{ tag.name }}</a>
         {% if logged_in %}<a href="/question/{{ id }}/tag/{{ tag.id }}/delete">X</a>{% endif %}
     {% endfor %}
 {% endblock %}
