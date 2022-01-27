@@ -1,6 +1,4 @@
 import connection
-import time
-from flask import request
 from psycopg2 import sql
 
 
