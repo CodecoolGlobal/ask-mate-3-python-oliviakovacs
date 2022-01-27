@@ -3,6 +3,28 @@
 {% block title %}Main page{% endblock %}
 
 {% block body %}
+    <div class="topnav">
+        <div class="search-container">
+            <form action="/search" method="post">
+              <input id="search" type="text" placeholder="Search.." name="search" required>
+              <button type="submit">Go</button>
+            </form>
+        </div>
+        <form action="/list">
+            <a href="/list">See all questions</a>
+        </form>
+        <form action="/tags">
+            <a href="/tags">See all tags</a>
+        </form>
+        {% if not logged_in %}
+        <form action="/login">
+            <a href="/login" style="float: right">Log in</a>
+        </form>
+            <form action="/registration">
+            <a href="/registration" style="float: right">Go to registration</a>
+        </form>
+        {% endif %}
+    </div>
 
     <ol>
     {% for question in questions %}

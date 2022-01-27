@@ -67,9 +67,32 @@ function toggleTheme() {
 }
 
 function increaseFont() {
+//     for (const text of document.querySelectorAll('.fontsize')) {
+//         text.style.fontSize++;
+//     }
+// }
+
+//      let tableContent = document.getElementById("doNotModifyThisId_QuestionsTableBody");
+//      let style = window.getComputedStyle(tableContent, null).getPropertyValue('font-size');
+//      let currentSize = parseFloat(style);
+//      tableContent.style.fontSize = (currentSize++) + 'px';
+// }
+//
+//
+//
+// {
+//     let fontSize = document.getElementById("increase-font-button").style.fontSize;
+//     // if (fontSize < 15) {
+//         ++fontSize;
+//     // }
     console.log("increaseFont")
 }
 
 function decreaseFont() {
+    let fontSize = document.getElementById("increase-font-button").style.fontSize;
+    if (fontSize > 3) {
+        --fontSize;
+    }
+
     console.log("decreaseFont")
 }
