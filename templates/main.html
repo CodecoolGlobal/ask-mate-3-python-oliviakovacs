@@ -38,11 +38,6 @@
         <p>{{ user.name }}<br>Since: {{ user.registration_date }}<br>Reputation: {{ user.reputation }}</p>
     </div>
      {% endif %}
-    <ol>
-    {% for question in questions %}
-            <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
-    {% endfor %}
-    </ol>
     <div class="q_container">
         {% for question in questions %}
             <div class="folder_back">#{{ question.id }}</div>
