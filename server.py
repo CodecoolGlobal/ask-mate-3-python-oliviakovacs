@@ -51,7 +51,6 @@ def login():
     return render_template("login.html", valid_login=True)
 
 
-
 @app.route("/", methods=['GET', 'POST'])
 def main_page():
     if request.method == 'POST':

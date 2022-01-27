@@ -32,10 +32,12 @@
             </form>
         {% endif %}
     </div>
+     {% if user %}
     <div class="userbox">
         <h3>user#{{ user.id }}</h3>
         <p>{{ user.name }}<br>Since: {{ user.registration_date }}<br>Reputation: {{ user.reputation }}</p>
     </div>
+     {% endif %}
     <ol>
     {% for question in questions %}
             <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
