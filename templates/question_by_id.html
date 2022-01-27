@@ -13,11 +13,10 @@
             <img src="/static/{{ data.image }}"onerror="this.onerror=null; this.src='/static/def3.png'">
             {% endif %}
             </div>
-
             <p>
                 <span>Like Question :</span> <span> {{ question.vote_number }}</span>
-                <a href="/question/{{ id }}/vote_up">↑</a>
-                <a href="/question/{{ id }}/vote_down">↓</a>
+                <a href="/question/{{ id }}/vote_up">👍</a>
+                <a href="/question/{{ id }}/vote_down">👎</a>
             </p>
             {% for content in question %}
         {% if content.user_id == same_user %}
@@ -56,7 +55,7 @@
 {#                <li> <a href="/question/{{ question.id }}">{{ data.answer.message }}</a></li>#}
                 <tr>
                     <td>{% if answer.accepted == '1' %}👑 {% endif %}{{ answer.message }}</td>
-                    <td>{{ answer.vote_number }} <a href="/answer/{{ answer.id }}/vote_up">↑</a> <a href="/answer/{{ answer.id }}/vote_down">↓</a></td>
+                    <td>{{ answer.vote_number }} <a href="/answer/{{ answer.id }}/vote_up">👍</a> <a href="/answer/{{ answer.id }}/vote_down">👎</a></td>
                             {% if authority %}
                                 {% if answer.accepted == "1" %}
                                     <td><a href="/{{ answer.id }}/{{answer.user_id}}/{{ id }}/unaccepted" onclick="return confirm('It is a Uncool answer?')">👎</a></td>
@@ -111,6 +110,6 @@
     {% if logged_in %}<div> <a href="/question/{{ id }}/new-tag">Add New Tag</a></div>{% endif %}
     {% for tag in tags %}
         <a href="/tags">{{ tag.name }}</a>
-        {% if logged_in %}<a href="/question/{{ id }}/tag/{{ tag.id }}/delete">X</a>{% endif %}
+        {% if logged_in %}<a href="/question/{{ id }}/tag/{{ tag.id }}/delete">❌</a>{% endif %}
     {% endfor %}
 {% endblock %}
