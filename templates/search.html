@@ -3,6 +3,9 @@
 {% block title %}Search{% endblock %}
 
 {% block body %}
+    <div class="subtiltle">
+    <h2>Search result</h2>
+    </div>
     {% set is_duplicate = namespace(value="") %}
     <dl>
     {% for content in questions_n_answers %}

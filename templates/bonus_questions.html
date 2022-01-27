@@ -3,8 +3,11 @@
 {% block title %}Bonus Questions{% endblock %}
 
 {% block body %}
+    <div class="subtiltle">
+    <h2>Bonus questions</h2>
+    </div>
 
-{#<html>#}
+
     <head>
         <script type="text/javascript" src="{{ url_for('static', filename='js/bonusQuestions.js') }}" defer></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/doNotModifyThisFile.js') }}" defer></script>
@@ -42,6 +45,5 @@
         </table>
         </div>
     </body>
-{#</html>#}
 
 {% endblock %}

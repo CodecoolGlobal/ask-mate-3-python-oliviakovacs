@@ -538,6 +538,7 @@ def get_comments_by_user_id(cursor, user_id):
     return cursor.fetchall()
 
 
+@connection.connection_handler
 def get_users(cursor, username):
     query = """
         SELECT EXISTS(SELECT name AS exists FROM "user" WHERE name = %(username)s)

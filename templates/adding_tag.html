@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block title %} Adding Tag {% endblock %}
+{% block title %} Adding tag {% endblock %}
 {% block body %}
-    <div><h1>Add Tag</h1></div>
+    <div class="subtiltle"><h2>Add Tag</h2></div>
     <div><form action="/question/{{ question_id }}/new-tag" method="post">
         <label for="new_tag">New Tag</label><br>
         <input type="text" id="new_tag" name="new_tag" maxlength="150"></a>

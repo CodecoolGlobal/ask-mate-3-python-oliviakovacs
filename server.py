@@ -11,7 +11,7 @@ app.secret_key = "ask_mate_3"
 
 
 @app.route("/bonus-questions", methods=['GET', 'POST'])
-def main():
+def bonus_question():
     return render_template('bonus_questions.html', questions=SAMPLE_QUESTIONS)
 
 

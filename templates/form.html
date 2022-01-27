@@ -4,11 +4,13 @@
 {{ "Question" if is_question else "Answer" }}
 {% endblock %}
 {% block body %}
+    <div class="subtiltle">
     {% if is_question %}
-    <h1>Question</h1>
+    <h2>Question</h2>
     {% else %}
-    <h1>Answer</h1>
+    <h2>Answer</h2>
     {% endif %}
+    </div>
     <form method="post" action={{ route }}>
         {% if is_question %}
         <label for="title">Question:</label><br>

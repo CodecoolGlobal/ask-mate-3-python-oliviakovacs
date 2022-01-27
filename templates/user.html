@@ -1,14 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ name }} page</title>
-    <style>
-        table, th, td {
-        border:1px solid black;}
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %} User page {% endblock %}
+
+{% block body %}
+    <div class="subtiltle">
+    <h2>{{ name }} page</h2>
+    </div>
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>{{ name }} page</title>#}
+{#    <style>#}
+{#        table, th, td {#}
+{#        border:1px solid black;}#}
+{#    </style>#}
+{#</head>#}
+{#<body>#}
     <div><p><strong>{{ name }} page </strong></p></div>
     <div>
         <table style="width:100%">
@@ -40,5 +48,6 @@
             {% endfor %}
         </table>
     </div>
-</body>
-</html>
+{% endblock %}
+{#</body>#}
+{#</html>#}
