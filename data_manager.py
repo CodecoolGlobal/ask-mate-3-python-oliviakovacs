@@ -492,30 +492,4 @@ def get_tags(cursor):
     return cursor.fetchall()
 
 
-@connection.connection_handler
-def write_bonus_question(cursor, headers, content):
-    query = """
-    INSERT INTO bonus (%s)
-    VALUES (%s)"""
-    cursor.execute(query, headers, content)
-
-
-# @connection.connection_handler
-# def drop_table(cursor):
-#     query = """
-#     DROP TABLE IF EXISTS public.bonus
-#     """
-#     cursor.execute(query)
-
-
-@connection.connection_handler
-def create_table(cursor, headers):
-    query = """
-    CREATE TABLE bonus
-    (id integer,
-    title text,
-    view_number integer,
-    vote_number integer,
-    description text)"""
-    cursor.execute(query)
 
