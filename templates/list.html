@@ -33,8 +33,10 @@
                 </div>
             {% endfor %}
         </ol>
-    {% if logged_in %}
+
     </div>
+    {% if logged_in %}
+        <div><a href="/bonus-questions">See Bonus Questions</a></div>
     <div> <a href="/add-question">Add New Question</a>
     </div>
     {% endif %}

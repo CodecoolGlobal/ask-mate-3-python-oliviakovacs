@@ -10,8 +10,35 @@ app = Flask(__name__)
 app.secret_key = "ask_mate_3"
 
 
-@app.route("/bonus-questions")
+@app.route("/bonus-questions", methods=['GET', 'POST'])
 def main():
+    # headers_list = []
+    # values_list = []
+    # for key, value in SAMPLE_QUESTIONS.items():
+    #     headers_list.append(key)
+    #     values_list.append(value)
+    # headers_string = ', '.join(headers_list)
+    # values_string = ', '.join(values_list)
+    # data_manager.create_table(headers_string)
+    # data_manager.write_bonus_question(headers_string, values_string)
+    if "user" in session:
+        if request.method == 'POST':
+            search = request.form['search']
+            found = []
+            for data in SAMPLE_QUESTIONS:
+                if search != any(["!life", "Description:life", "!Description:life"])\
+                       and data["title"].count(search) > 0:
+                    found.append(data)
+                elif search == "!life" and data["title"].count(search) > 0:
+                    found.append({data})
+                elif search == "Description:life":
+                    data["description"].count(search)
+                    found.append({data})
+                elif search == "!Description:life" and data["description"].count(search) > 0:
+                    found.append({data})
+            if not found:
+                return render_template("error.html")
+            return render_template('bonus_questions.html', questions=found)
     return render_template('bonus_questions.html', questions=SAMPLE_QUESTIONS)
 
 
