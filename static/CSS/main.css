@@ -146,3 +146,47 @@ body {
   width: 20px;
   margin-left: 10%;
 }
+
+.q_container {
+  background: #DCDCDC;
+  font-size: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2%;
+}
+
+.q_container div {
+  border-radius: 10px;
+  padding-top: 10px;
+}
+
+.folder_back {
+  background-color: rgba(255, 140, 0, 0.815);
+  padding-left: 2.5%;
+  width: 90%;
+  height: 300px;
+  font-size: 3rem;
+}
+
+.q_box {
+  background-color: wheat;
+  margin-left: 2%;
+  padding-left: 2.5%;
+  border: 10px;
+  margin-top: -250px;
+  width: 87%;
+  height: 200px;
+}
+
+.folder_front {
+  background-color: darkorange;
+  margin-left: 2%;
+  padding-left: 2.5%;
+  margin-top: -150px;
+  text-align: center;
+  color: darkred;
+  width: 90%;
+  height: 200px;
+  font-size: 3rem;
+}

@@ -43,4 +43,11 @@
             <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
     {% endfor %}
     </ol>
+    <div class="q_container">
+        {% for question in questions %}
+            <div class="folder_back">#{{ question.id }}</div>
+            <div class="q_box"><a href="/question/{{ question.id }}">{{ question.title }}</a></div>
+            <div class="folder_front">{{ "<very_top_secret>"}}</div>
+        {% endfor %}
+    </div>
 {% endblock %}
