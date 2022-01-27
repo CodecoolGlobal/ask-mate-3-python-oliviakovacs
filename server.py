@@ -59,8 +59,9 @@ def main_page():
         return search
     if "user" in session:
         user = session["user"]
+        user_attributes = data_manager.get_user_attirbutes(user)
         all_questions = data_manager.get_latest_questions()
-        return render_template('main.html', questions=all_questions, logged_in=True)
+        return render_template('main.html', questions=all_questions, logged_in=True, user=user_attributes)
 
     all_questions = data_manager.get_latest_questions()
     return render_template('main.html', questions=all_questions, logged_in=False)

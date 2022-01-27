@@ -547,4 +547,12 @@ def get_users(cursor, username):
     return cursor.fetchone()
 
 
-
+@connection.connection_handler
+def get_user_attirbutes(cursor, username):
+    query = """
+    SELECT name, id, reputation, DATE(registration_date) AS registration_date
+    FROM "user"
+    WHERE name = %(username)s
+    """
+    cursor.execute(query, {'username': username})
+    return cursor.fetchone()

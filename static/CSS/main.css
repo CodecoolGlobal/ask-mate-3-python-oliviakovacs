@@ -5,11 +5,12 @@
 body {
   font-family: Arial;
   padding: 10px;
-  background: #f1f1f1;
+  background: #DCDCDC;
 }
 
 /* Header/Blog Title */
 .header {
+  border-radius: 15px;
   padding: 10px;
   text-align: center;
   background: white;
@@ -25,47 +26,11 @@ body {
 
 /* Style the top navigation bar */
 .topnav {
+  position: relative;
+  height: 45px;
   border-radius: 10px;
   overflow: hidden;
-  background-color: #333;
-}
-
-/* Style the topnav links */
-.topnav a {
-  float: left;
-  display: block;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-/* Change color on hover */
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-/* Create two unequal columns that floats next to each other */
-/* Left column */
-.leftcolumn {
-  float: left;
-  width: 75%;
-}
-
-/* Right column */
-.rightcolumn {
-  float: left;
-  width: 25%;
-  background-color: #f1f1f1;
-  padding-left: 20px;
-}
-
-/* Add a card effect for articles */
-.card {
-  background-color: white;
-  padding: 20px;
-  margin-top: 20px;
+  background-color: #008080;
 }
 
 /* Style the input container */
@@ -78,22 +43,27 @@ body {
 .topnav input[type=text] {
   border-radius: 5px;
   padding: 6px;
-  margin-top: 8px;
+  margin-top: 2.7%;
   font-size: 17px;
   border: none;
 }
 
 /* Style the button inside the input container */
 .topnav .search-container button {
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
   border-radius: 5px;
   float: right;
   padding: 6px;
-  margin-top: 8px;
-  margin-right: 16px;
+  margin: 0;
+  /*margin-right: 16px;*/
   background: #ddd;
   font-size: 17px;
   border: none;
   cursor: pointer;
+  color: #008080;
 }
 
 .topnav .search-container button:hover {
@@ -118,3 +88,61 @@ body {
   }
 }
 
+
+
+/* Style the topnav links */
+.topnav a {
+  margin-left: 16px;
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  /*align-items: center;*/
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change color on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: #008080;
+}
+
+/* Create two unequal columns that floats next to each other */
+/* Left column */
+.leftcolumn {
+  float: left;
+  width: 75%;
+}
+
+/* Right column */
+.rightcolumn {
+  float: left;
+  width: 25%;
+  background-color: #f1f1f1;
+  padding-left: 20px;
+}
+
+/* Add a card effect for articles */
+.card {
+  background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+
+/* Add a card effect for articles */
+.userbox {
+  width: 15%;
+  border-radius: 15px;
+  float: right;
+  background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+  margin-right: 20px;
+}
+
+.list .img {
+  width: 20px;
+  margin-left: 10%;
+}

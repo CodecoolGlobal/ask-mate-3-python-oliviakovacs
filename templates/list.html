@@ -7,39 +7,40 @@
   <h2>Question list</h2>
 </div>
 
-    <div>
+    <div class="topnav">
         <form action="/list">
-            <label for="sort-input">Sort by:</label>
-            <select id="sort-input" name="order-by">
+            <div class="search-container">
+                <label for="sort-input">Sort by:</label>
+                <select id="sort-input" name="order-by">
                 {% for header in headers %}
                     <option value="{{ header }}">{{ header }}</option>
                 {% endfor %}
-            </select>
-            <label for="direction-input">Direction:</label>
-            <select id="direction-input" name="direction">
+                </select>
+                <label for="direction-input">Direction:</label>
+                <select id="direction-input" name="direction">
                 <option value="ASC">Ascending</option>
                 <option value="DESC">Descending</option>
-            </select>
-            <button type="submit">Order</button>
+                </select>
+                <button type="submit">Order</button>
+                {% if logged_in %}
+                <a href="/bonus-questions">See Bonus Questions</a>
+                <a href="/add-question">Add New Question</a>
+            </div>
+
+
         </form>
     </div>
 
-    <div>
+    <div class="list">
         <ol>
             {% for question in questions %}
                 <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
-                 <div>
+                 <div class="img">
                 {% if question.image %}
-                <img src="/static/{{ question.image }}" onerror="this.onerror=null; this.src='/static/Default.png'">
+                <img src="/static/{{ question.image }}" onerror="this.onerror=null; this.src='/static/Default.png'" style="width:200px">
                 {% endif %}
                 </div>
             {% endfor %}
         </ol>
-
-    </div>
-    {% if logged_in %}
-        <div><a href="/bonus-questions">See Bonus Questions</a></div>
-    <div> <a href="/add-question">Add New Question</a>
-    </div>
     {% endif %}
 {% endblock %}
