@@ -19,34 +19,28 @@
 {#<body>#}
     <div><p><strong>{{ name }} page </strong></p></div>
     <div>
-        <table style="width:100%">
-            <th>Questions</th>
+        <h3>Questions</h3>
+        <ol>
             {% for question in questions %}
-                <tr>
-                    <td><a href="/question/{{ question.id }}">{{ question.title }}</a></td>
-                </tr>
-            {% endfor %}
-        </table>
+                    <li><a href="/question/{{ question.id }}">{{ question.title }}</a></li>
+            {% endfor %}<ol></ol>
+        </ol>
     </div><br>
     <div>
-        <table style="width:100%">
-            <th>Answers</th>
+        <h3>Answers</h3>
+        <ol>
             {% for answer in answers %}
-                <tr>
-                    <td><a href="/question/{{ answer.question_id }}">{{ answer.message }}</a></td>
-                </tr>
+                    <li><a href="/question/{{ answer.question_id }}">{{ answer.message }}</a></li>
             {% endfor %}
-        </table>
+        </ol>
     </div><br>
     <div>
-        <table style="width:100%">
-            <th>Comments</th>
+        <h3>Comments</h3>
+        <ol>
             {% for comment in comments %}
-                <tr>
-                    <td><a href='/what-type-of-comment/{{ comment.question_id }}/{{ comment.answer_id }}'>{{ comment.message }}</a></td>
-                </tr>
+                <li><a href='/what-type-of-comment/{{ comment.question_id }}/{{ comment.answer_id }}'>{{ comment.message }}</a></li>
             {% endfor %}
-        </table>
+        </ol>
     </div>
 {% endblock %}
 {#</body>#}
