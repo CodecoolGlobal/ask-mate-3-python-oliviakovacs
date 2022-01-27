@@ -14,7 +14,7 @@ def get_questions(cursor, order="submission_time", direction="DESC"):
 @connection.connection_handler
 def get_question_by_id(cursor, id):
     query = '''
-        SELECT title, message, vote_number, view_number, id, user_id
+        SELECT title, message, vote_number, view_number, id, user_id, image
         FROM question
         WHERE id = %(q)s
         '''

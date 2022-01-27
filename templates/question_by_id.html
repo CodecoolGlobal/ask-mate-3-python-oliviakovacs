@@ -8,6 +8,12 @@
         <h2> {{ data.title }} </h2>
             {% if data.user_id == same_user %}<div> <a href="/question/{{ data.id }}/edit">Edit question</a></div>{% endif %}
         <h3> {{ data.message }} </h3>
+            <div>
+            {% if data.image %}
+            <img src="/static/{{ data.image }}"onerror="this.onerror=null; this.src='/static/def3.png'">
+            {% endif %}
+            </div>
+
             <p>
                 <span>Like Question :</span> <span> {{ question.vote_number }}</span>
                 <a href="/question/{{ id }}/vote_up">↑</a>
@@ -78,7 +84,7 @@
                 <tr>
                     <td>
                         {% if answer.image %}
-                        <img src="/static/{{ answer.image }}">
+                        <img src="/static/{{ answer.image }}"onerror="this.onerror=null; this.src='/static/def2.jpg'">
                         {% endif %}
                         {% if answer.user_id == same_user %}<form action="/answer/{{ answer.id }}/edit">
                             <input type="submit" value="Edit Answer" />

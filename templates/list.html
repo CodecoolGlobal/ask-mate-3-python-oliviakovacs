@@ -28,7 +28,7 @@
                 <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
                  <div>
                 {% if question.image %}
-                <img src="/static/{{ question.image }}">
+                <img src="/static/{{ question.image }}" onerror="this.onerror=null; this.src='/static/Default.png'">
                 {% endif %}
                 </div>
             {% endfor %}
