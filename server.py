@@ -19,8 +19,8 @@ def main():
 def registration():
     if request.method == "POST":
         username = request.form['username']
-        all_user_names = data_manager.get_user_names()
-        if username in all_user_names:
+        is_exists = data_manager.get_users(username)
+        if is_exists["exists"] == True:
             return render_template('registration.html', new_user=False)
         password = request.form['password']
         hash_password = security.hash_password(password)
@@ -423,11 +423,29 @@ def users_page():
         return redirect('/login')
 
 
+@app.route('/user/<user_id>')
+def user_page(user_id):
+    username = data_manager.get_username_by_id(user_id)["name"]
+    questions = data_manager.get_questions_by_user_id(int(user_id))
+    answer = data_manager.get_answers_by_user_id(int(user_id))
+    comment = data_manager.get_comments_by_user_id(int(user_id))
+    return render_template('user.html', name=username, questions=questions, answers=answer, comments=comment)
+
+
+@app.route('/what-type-of-comment/<question_id>/<answer_id>')
+def question_comment_or_answer_id(question_id, answer_id):
+    if question_id != "None":
+        return redirect(url_for("display_question", id=question_id))
+    question_id_by_function = data_manager.get_question_id_by_answer(answer_id)["question_id"]
+    return redirect(url_for("display_question", id=question_id_by_function))
+
+
 @app.route("/tags", methods=['GET'])
 def tags():
     all_tags = data_manager.get_tags()
     print(all_tags)
     return render_template("tags.html", all_tags=all_tags)
+
 
 
 if __name__ == "__main__":
