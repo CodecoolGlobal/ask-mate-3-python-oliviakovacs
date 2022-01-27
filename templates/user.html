@@ -3,16 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ name }} page</title>
+    <style>
+        table, th, td {
+        border:1px solid black;}
+    </style>
 </head>
 <body>
-<div>
-
-</div>
-<div>
-
-</div>
-<div>
-
-</div>
+    <div><p><strong>{{ name }} page </strong></p></div>
+    <div>
+        <table style="width:100%">
+            <th>Questions</th>
+            {% for question in questions %}
+                <tr>
+                    <td><a href="/question/{{ question.id }}">{{ question.title }}</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div><br>
+    <div>
+        <table style="width:100%">
+            <th>Answers</th>
+            {% for answer in answers %}
+                <tr>
+                    <td><a href="/question/{{ answer.question_id }}">{{ answer.message }}</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div><br>
+    <div>
+        <table style="width:100%">
+            <th>Comments</th>
+            {% for comment in comments %}
+                <tr>
+                    <td><a href='/what-type-of-comment/{{ comment.question_id }}/{{ comment.answer_id }}'>{{ comment.message }}</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 </body>
 </html>

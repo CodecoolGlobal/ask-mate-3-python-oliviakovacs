@@ -169,8 +169,10 @@ def delete_comment_by_id(cursor, comment_id):
     query = """
         DELETE
         FROM comment
-        WHERE id = %(c_id)s"""
+        WHERE id = %(c_id)s
+        RETURNING question_id, answer_id"""
     cursor.execute(query, {'c_id': comment_id})
+    return cursor.fetchone()
 
 
 @connection.connection_handler
@@ -334,7 +336,7 @@ def edit_comment(cursor, id, comment_message, now):
         UPDATE comment
         SET message = %(c_m)s, submission_time = %(c_now)s, edited_count = edited_count + 1
         WHERE id = %(c_id)s
-        RETURNING question_id
+        RETURNING question_id, answer_id
         """
     cursor.execute(query, {'c_id': id, 'c_m': comment_message, 'c_now': now})
     return cursor.fetchone()
@@ -485,4 +487,54 @@ def get_user_list(cursor):
         GROUP BY u.id, u.name, u.registration_date, u.reputation
         ORDER BY u.id"""
     cursor.execute(query)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_tags(cursor):
+    query = """
+        SELECT tag.name, COUNT(question_tag.tag_id) as number_of_questions
+        FROM tag
+        LEFT JOIN question_tag
+        ON tag.id = question_tag.tag_id
+        GROUP BY tag.name
+        ORDER BY number_of_questions DESC;
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_questions_by_user_id(cursor, user_id):
+    query = """
+        SELECT title, id
+        FROM question
+        WHERE user_id = %(user_id)s
+        ORDER BY submission_time
+    """
+    cursor.execute(query, {"user_id": user_id})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_answers_by_user_id(cursor, user_id):
+    query = """
+            SELECT message, question_id
+            FROM answer
+            WHERE user_id = %(user_id)s
+            ORDER BY submission_time
+        """
+    cursor.execute(query, {"user_id": user_id})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_comments_by_user_id(cursor, user_id):
+    query = """
+            SELECT message, question_id, answer_id
+            FROM comment
+            WHERE user_id = %(user_id)s
+            ORDER BY submission_time
+        """
+    cursor.execute(query, {"user_id": user_id})
     return cursor.fetchall()

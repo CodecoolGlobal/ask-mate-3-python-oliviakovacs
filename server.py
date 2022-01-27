@@ -268,10 +268,17 @@ def delete_answer(answer_id):
 
 
 # erre is
-@app.route('/comment/<id>/<comment_id>/delete', methods=["POST", "GET"])
-def delete_comment(id, comment_id):
-    data_manager.delete_comment_by_id(comment_id)
-    return redirect(url_for("display_question", id=id))
+@app.route('/comment/<comment_id>/delete', methods=["POST", "GET"])
+def delete_comment(comment_id):
+    comment = data_manager.delete_comment_by_id(comment_id)
+    question_id = comment['question_id']
+    answer_id = comment['answer_id']
+    if question_id:
+        return redirect(url_for("display_question", id=question_id))
+    else:
+        question_id = data_manager.get_question_id_by_answer(answer_id)
+        question_id = question_id['question_id']
+        return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/question/<question_id>/vote_up')
@@ -344,7 +351,14 @@ def edit_comment(comment_id):
         message = request.form["comment_message"]
         comment = data_manager.edit_comment(comment_id, message, now)
         question_id = comment['question_id']
-        return redirect(url_for("display_question", id=question_id))
+        answer_id = comment['answer_id']
+        if question_id:
+            return redirect(url_for("display_question", id=question_id))
+        else:
+            question_id = data_manager.get_question_id_by_answer(answer_id)
+            question_id = question_id['question_id']
+            return redirect(url_for("display_question", id=question_id))
+
     comment = data_manager.get_comment_by_id(comment_id)
     return render_template("edit_comment.html", comment=comment, c_id=comment_id)
 
@@ -412,7 +426,26 @@ def users_page():
 @app.route('/user/<user_id>')
 def user_page(user_id):
     username = data_manager.get_username_by_id(user_id)["name"]
-    return render_template('user.html', name=username)
+    questions = data_manager.get_questions_by_user_id(int(user_id))
+    answer = data_manager.get_answers_by_user_id(int(user_id))
+    comment = data_manager.get_comments_by_user_id(int(user_id))
+    return render_template('user.html', name=username, questions=questions, answers=answer, comments=comment)
+
+
+@app.route('/what-type-of-comment/<question_id>/<answer_id>')
+def question_comment_or_answer_id(question_id, answer_id):
+    if question_id != "None":
+        return redirect(url_for("display_question", id=question_id))
+    question_id_by_function = data_manager.get_question_id_by_answer(answer_id)["question_id"]
+    return redirect(url_for("display_question", id=question_id_by_function))
+
+
+@app.route("/tags", methods=['GET'])
+def tags():
+    all_tags = data_manager.get_tags()
+    print(all_tags)
+    return render_template("tags.html", all_tags=all_tags)
+
 
 
 if __name__ == "__main__":

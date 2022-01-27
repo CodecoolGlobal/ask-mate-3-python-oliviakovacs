@@ -32,7 +32,7 @@
 {#                            <input type="submit" value="Delete Comment" /><br><br>#}
 {#                        </form>{% endif %}#}
                         {% if q_comment.user_id == same_user %}<button type="submit">
-                            <a href="/comment/{{ data.id }}/{{ q_comment.id }}/delete" onclick="return confirm('Are you sure?')">🗑</a></button>{% endif %}
+                            <a href="/comment/{{ q_comment.id }}/delete" onclick="return confirm('Are you sure?')">🗑</a></button>{% endif %}
                     </td>
                 </tr>
 
@@ -102,7 +102,7 @@
     {% if logged_in %}<div> <a href="/question/{{ id }}/new-answer">Add New Answer</a></div>{% endif %}
     {% if logged_in %}<div> <a href="/question/{{ id }}/new-tag">Add New Tag</a></div>{% endif %}
     {% for tag in tags %}
-        <a href="url">{{ tag.name }}</a>
+        <a href="/tags">{{ tag.name }}</a>
         {% if logged_in %}<a href="/question/{{ id }}/tag/{{ tag.id }}/delete">X</a>{% endif %}
     {% endfor %}
 {% endblock %}
