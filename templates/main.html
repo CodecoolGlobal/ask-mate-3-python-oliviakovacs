@@ -2,13 +2,13 @@
 
 {% block title %}Main page{% endblock %}
 
-{% block body %}
-    <div class="subtiltle">
-    <h2>AskMate3</h2>
-    </div>
-    <div class="topnav">
-        <div class="search-container">
-            <form action="/search" method="post">
+ {% block body %}
+     <div class="subtiltle">
+     <h2>AskMate3</h2>
+     </div>
+     <div class="topnav">
+         <div class="search-container">
+             <form action="/search" method="post">
               <input id="search" type="text" placeholder="Search.." name="search" required>
               <button type="submit">Go</button>
             </form>
@@ -26,34 +26,15 @@
             <form action="/registration">
             <a href="/registration" style="float: right">Go to registration</a>
         </form>
+        {% else %}
+            <form action="/users">
+                <a href="/users">List all users</a>
+            </form>
         {% endif %}
     </div>
-
     <ol>
     {% for question in questions %}
             <li> <a href="/question/{{ question.id }}">{{ question.title }}</a></li>
     {% endfor %}
     </ol>
-    <form action="/search" method="post">
-        <label for="search">Search</label>
-        <input id="search" name="search" type="text" required>
-        <button type="submit">Go</button><br>
-    </form>
-    <form action="/tags">
-        <button type="submit">See all tags</button>
-    </form>
-    <form action="/list">
-        <button type="submit">See all questions</button>
-    </form>
-     <form action="/users">
-        <button type="submit">List all user</button>
-    </form>
-    {% if not logged_in %}
-    <form action="/registration">
-        <button type="submit">Go to registration</button>
-    </form>
-    <form action="/login">
-        <button type="submit">Log in</button>
-    </form>
-    {% endif %}
 {% endblock %}
